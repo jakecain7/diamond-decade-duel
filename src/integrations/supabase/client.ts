@@ -46,4 +46,15 @@ export type CustomDatabase = Database & {
   };
 };
 
-export const supabase = createClient<CustomDatabase>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+export const supabase = createClient<CustomDatabase>(
+  SUPABASE_URL, 
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true, // Critical for handling redirects with access tokens in the URL
+      storage: localStorage
+    }
+  }
+);

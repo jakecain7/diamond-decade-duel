@@ -11,6 +11,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Header from "./components/Header";
 import { useEffect } from "react";
 import { supabase } from "./integrations/supabase/client";
+import AuthCallback from "./components/AuthCallback";
 
 // Initialize Supabase auth to properly handle hash parameters
 // This ensures the client processes the URL fragment on initial load
@@ -45,6 +46,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/grid/today" element={<GridPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
