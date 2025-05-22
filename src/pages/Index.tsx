@@ -5,15 +5,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import GridPage from "./GridPage";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If user is logged in, redirect to the grid page
-    if (user) {
+    // Only redirect after auth is done loading and user is authenticated
+    if (!loading && user) {
       navigate("/grid/today");
     }
-  }, [user, navigate]);
+  }, [user, navigate, loading]);
 
   // Just render the GridPage component directly, which will handle
   // showing either the auth form or grid based on authentication status

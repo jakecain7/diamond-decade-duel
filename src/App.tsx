@@ -3,31 +3,54 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GridPage from "./pages/GridPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import Header from "./components/Header";
+import { useEffect } from "react";
+import { supabase } from "./integrations/supabase/client";
+
+// Initialize Supabase auth to properly handle hash parameters
+// This ensures the client processes the URL fragment on initial load
+const processHashParameters = async () => {
+  // This will process the access token in the URL fragment if present
+  const { error } = await supabase.auth.initialize();
+  if (error) {
+    console.error("Error initializing auth:", error);
+  }
+};
 
 const queryClient = new QueryClient();
+
+// Create a component that handles the auth initialization
+const AuthInitializer = ({ children }: { children: React.ReactNode }) => {
+  useEffect(() => {
+    processHashParameters();
+  }, []);
+
+  return <>{children}</>;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/grid/today" element={<GridPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <AuthInitializer>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/grid/today" element={<GridPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </AuthInitializer>
     </TooltipProvider>
   </QueryClientProvider>
 );
