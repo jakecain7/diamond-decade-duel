@@ -1,1 +1,96 @@
+
+# A string used to distinguish different Supabase projects on the same host. Defaults to the working
+# directory name when running `supabase init`.
 project_id = "nqugsmhlnunxioauianh"
+org_id = "000000"
+root_password = "postgres"
+
+# Config specific to the Postgres database.
+[database]
+# The port number that the database server will listen on.
+port = 54322
+# The host address that the database server will listen on. 'localhost' for local development.
+host = "localhost"
+# A connection string to the database.
+connection_string = "postgres://postgres:postgres@localhost:54322/postgres?sslmode=disable"
+# The schema that will be set as the "search_path" for all database connections.
+schema = "public"
+# Encoded self-signed certificate for local SSL development.
+certificate = ""
+database = "postgres"
+
+# Config specific to the API server.
+[api]
+# The maximum rows returns from a service call for REST and GraphQL.
+max_rows = 1000
+# The port number that the API server will listen on.
+port = 54321
+# The time limit for database queries.
+query_timeout = 25
+# The mode to run the API server in.
+mode = "standalone"
+# The port of the db that the API server should connect to.
+database_url = "postgres://postgres:postgres@localhost:54322/postgres?sslmode=disable"
+
+# Configuration for Edge Functions
+[functions]
+# Port that the Functions server listens on.
+port = 54323
+# The function webhook key to use for remote deploys.
+webhook_key = "s6yAX7n/rQuSzoUd6BI9hw=="
+
+# Configuration for BackBlaze B2 integration for storage.
+[storage]
+# The B2 Application Key ID.
+key_id = ""
+# The B2 Application Key.
+access_key = ""
+
+# Configuration for the Studio dashboard.
+[studio]
+# The port that the Studio server will listen on.
+port = 54324
+
+# Configuration for realtime.
+[realtime]
+# The port that the realtime server will listen on.
+port = 54325
+
+[inbucket]
+# The port that the SMTP listener of inbucket will listen on.
+smtp_port = 54327
+# The port that the POP3 API of inbucket will listen on.
+pop3_port = 54329
+# The port that the Web API of inbucket will listen on.
+web_port = 54324
+# The UI path of inbucket web UI.
+ui_path = "/inbucket"
+
+[auth]
+# Run migrations automatically on startup.
+migrate = true
+# JWT time-to-live, in seconds.
+jwt_expiry = 3600
+# JWT refresh expiry time, in seconds.
+jwt_refresh_expiry = 604800
+# Require email verification.
+email_confirm_required = false
+# Email templates.
+email_template_path = "supabase/templates/emails"
+# Site URL.
+site_url = ""
+# SMTP configuration.
+smtp_host = ""
+smtp_port = ""
+smtp_user = ""
+smtp_pass = ""
+smtp_sender_name = ""
+smtp_sender_address = ""
+
+[ingress]
+port = 54320
+
+# Config specific to the analytics API
+[analytics]
+port = 54330
+gzip_level = 2
