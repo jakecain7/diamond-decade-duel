@@ -32,7 +32,7 @@ const GridPage = () => {
           return;
         }
         
-        setPuzzle(data as PuzzleDefinition);
+        setPuzzle(data);
       } catch (err) {
         console.error("Failed to fetch puzzle:", err);
         setError("An error occurred while loading the puzzle. Please try again later.");

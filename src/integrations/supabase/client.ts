@@ -9,4 +9,41 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Define our custom Database type that includes the puzzles table
+export type CustomDatabase = Database & {
+  public: {
+    Tables: {
+      puzzles: {
+        Row: {
+          id: string;
+          puzzle_date: string;
+          row1_label: string;
+          row2_label: string;
+          col1_label: string;
+          col2_label: string;
+          col3_label: string;
+        };
+        Insert: {
+          id?: string;
+          puzzle_date: string;
+          row1_label: string;
+          row2_label: string;
+          col1_label: string;
+          col2_label: string;
+          col3_label: string;
+        };
+        Update: {
+          id?: string;
+          puzzle_date?: string;
+          row1_label?: string;
+          row2_label?: string;
+          col1_label?: string;
+          col2_label?: string;
+          col3_label?: string;
+        };
+      };
+    };
+  };
+};
+
+export const supabase = createClient<CustomDatabase>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
