@@ -45,6 +45,81 @@ export type Database = {
           },
         ]
       }
+      batting_stats: {
+        Row: {
+          "2b": number | null
+          "3b": number | null
+          AB: number | null
+          BB: number | null
+          CS: number | null
+          G: number | null
+          GIDP: number | null
+          H: number | null
+          HBP: number | null
+          HR: number | null
+          IBB: number | null
+          league_id: string | null
+          player_id: string
+          R: number | null
+          RBI: number | null
+          SB: number | null
+          SF: number | null
+          SH: number | null
+          SO: number | null
+          stint: number
+          team_id: string | null
+          year: number
+        }
+        Insert: {
+          "2b"?: number | null
+          "3b"?: number | null
+          AB?: number | null
+          BB?: number | null
+          CS?: number | null
+          G?: number | null
+          GIDP?: number | null
+          H?: number | null
+          HBP?: number | null
+          HR?: number | null
+          IBB?: number | null
+          league_id?: string | null
+          player_id: string
+          R?: number | null
+          RBI?: number | null
+          SB?: number | null
+          SF?: number | null
+          SH?: number | null
+          SO?: number | null
+          stint: number
+          team_id?: string | null
+          year: number
+        }
+        Update: {
+          "2b"?: number | null
+          "3b"?: number | null
+          AB?: number | null
+          BB?: number | null
+          CS?: number | null
+          G?: number | null
+          GIDP?: number | null
+          H?: number | null
+          HBP?: number | null
+          HR?: number | null
+          IBB?: number | null
+          league_id?: string | null
+          player_id?: string
+          R?: number | null
+          RBI?: number | null
+          SB?: number | null
+          SF?: number | null
+          SH?: number | null
+          SO?: number | null
+          stint?: number
+          team_id?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       games: {
         Row: {
           description: string | null
