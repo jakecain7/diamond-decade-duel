@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 import Grid from "./Grid";
 import { PuzzleDefinition } from "@/lib/types";
 import SubmitButton from "./SubmitButton";
+import Button from "./Button";
 
 interface GridContainerProps {
   puzzle: PuzzleDefinition;
