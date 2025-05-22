@@ -1,7 +1,8 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { PuzzleDefinition } from "@/lib/types";
 import GridCell from "@/components/GridCell";
+import SearchModal from "./SearchModal";
 
 interface GridProps {
   puzzle: PuzzleDefinition;
@@ -11,6 +12,34 @@ interface GridProps {
 }
 
 const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps) => {
+  const [searchModal, setSearchModal] = useState({
+    isOpen: false,
+    cell: null,
+    position: null as { row: number; col: number } | null
+  });
+
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    // Don't open modal for locked cells
+    if (gridState[rowIndex][colIndex].isLocked) return;
+    
+    setSearchModal({
+      isOpen: true,
+      cell: gridState[rowIndex][colIndex],
+      position: { row: rowIndex, col: colIndex }
+    });
+  };
+
+  const handleCloseModal = () => {
+    setSearchModal(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const handleSelect = (value: string, playerId?: string) => {
+    if (searchModal.position) {
+      const { row, col } = searchModal.position;
+      handleCellUpdate(row, col, value, playerId);
+    }
+  };
+
   return (
     <div className="relative">
       {/* Grid header with decade labels */}
@@ -40,7 +69,8 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             rowIndex={0}
             colIndex={colIndex}
             onValueChange={(value, playerId) => handleCellUpdate(0, colIndex, value, playerId)}
-            onBlur={handleCellBlur ? () => handleCellBlur(0, colIndex) : undefined}
+            onClick={() => handleCellClick(0, colIndex)}
+            showInputField={false}
           />
         ))}
 
@@ -55,10 +85,20 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             rowIndex={1}
             colIndex={colIndex}
             onValueChange={(value, playerId) => handleCellUpdate(1, colIndex, value, playerId)}
-            onBlur={handleCellBlur ? () => handleCellBlur(1, colIndex) : undefined}
+            onClick={() => handleCellClick(1, colIndex)}
+            showInputField={false}
           />
         ))}
       </div>
+
+      {/* Search Modal */}
+      <SearchModal 
+        isOpen={searchModal.isOpen}
+        onClose={handleCloseModal}
+        cell={searchModal.cell}
+        position={searchModal.position}
+        onSelect={handleSelect}
+      />
     </div>
   );
 };
