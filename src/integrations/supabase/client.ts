@@ -42,6 +42,69 @@ export type CustomDatabase = Database & {
           col3_label?: string;
         };
       };
+      players: {
+        Row: {
+          id: string;
+          name_first: string;
+          name_last: string;
+          name_given: string | null;
+          debut_year: number | null;
+          final_year: number | null;
+        };
+        Insert: {
+          id: string;
+          name_first: string;
+          name_last: string;
+          name_given?: string | null;
+          debut_year?: number | null;
+          final_year?: number | null;
+        };
+        Update: {
+          id?: string;
+          name_first?: string;
+          name_last?: string;
+          name_given?: string | null;
+          debut_year?: number | null;
+          final_year?: number | null;
+        };
+      };
+      teams: {
+        Row: {
+          id: string;
+          name: string;
+          league_id: string;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          league_id: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          league_id?: string;
+        };
+      };
+      appearances: {
+        Row: {
+          id: string;
+          player_id: string;
+          team_id: string;
+          year: number;
+        };
+        Insert: {
+          id?: string;
+          player_id: string;
+          team_id: string;
+          year: number;
+        };
+        Update: {
+          id?: string;
+          player_id?: string;
+          team_id?: string;
+          year?: number;
+        };
+      };
     };
   };
 };

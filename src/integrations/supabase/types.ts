@@ -9,6 +9,69 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appearances: {
+        Row: {
+          id: string
+          player_id: string
+          team_id: string
+          year: number
+        }
+        Insert: {
+          id?: string
+          player_id: string
+          team_id: string
+          year: number
+        }
+        Update: {
+          id?: string
+          player_id?: string
+          team_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appearances_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appearances_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          debut_year: number | null
+          final_year: number | null
+          id: string
+          name_first: string
+          name_given: string | null
+          name_last: string
+        }
+        Insert: {
+          debut_year?: number | null
+          final_year?: number | null
+          id: string
+          name_first: string
+          name_given?: string | null
+          name_last: string
+        }
+        Update: {
+          debut_year?: number | null
+          final_year?: number | null
+          id?: string
+          name_first?: string
+          name_given?: string | null
+          name_last?: string
+        }
+        Relationships: []
+      }
       puzzles: {
         Row: {
           col1_label: string
@@ -39,6 +102,24 @@ export type Database = {
           puzzle_date?: string
           row1_label?: string
           row2_label?: string
+        }
+        Relationships: []
+      }
+      teams: {
+        Row: {
+          id: string
+          league_id: string
+          name: string
+        }
+        Insert: {
+          id: string
+          league_id: string
+          name: string
+        }
+        Update: {
+          id?: string
+          league_id?: string
+          name?: string
         }
         Relationships: []
       }
