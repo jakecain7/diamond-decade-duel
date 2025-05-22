@@ -117,10 +117,10 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
           )}
         </div>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full max-w-[300px]" align="start">
+      <PopoverContent className="p-0 w-full max-w-[300px] z-[999]" align="start">
         <Command onKeyDown={handleKeyDown}>
           <CommandInput placeholder="Search players..." value={inputValue} onValueChange={setInputValue} />
-          <CommandList>
+          <CommandList className="max-h-[200px]">
             {loading && (
               <div className="p-4 text-center flex items-center justify-center">
                 <Loader2 className="h-4 w-4 animate-spin text-brick mr-2" />
@@ -137,10 +137,8 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
                   key={player.id}
                   value={player.name}
                   onSelect={() => handleSelect(player)}
-                  className="flex justify-between"
                 >
-                  <div className="text-left">{player.name}</div>
-                  {/* Removed years from display */}
+                  {player.name}
                 </CommandItem>
               ))}
             </CommandGroup>
