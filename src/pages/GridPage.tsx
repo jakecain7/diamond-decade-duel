@@ -1,33 +1,17 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import GridCell from "@/components/GridCell";
+import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { PuzzleDefinition, TeamMapping } from "@/lib/types";
+import { PuzzleDefinition } from "@/lib/types";
 import { useGridState } from "@/hooks/useGridState";
 import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/AuthForm";
-import { Loader2 } from "lucide-react";
-
-// Mapping of team names to team IDs (would ideally come from database)
-const TEAM_MAPPINGS: TeamMapping = {
-  "New York Yankees": "NYA",
-  "Boston Red Sox": "BOS",
-  "Chicago Cubs": "CHN",
-  "Los Angeles Dodgers": "LAN",
-  // Add more mappings as needed for your puzzles
-};
-
-// Mapping of decade labels to decade start years
-const DECADE_MAPPINGS: { [key: string]: number } = {
-  "1970s": 1970,
-  "1980s": 1980,
-  "1990s": 1990,
-  // Add more mappings as needed
-};
+import { getTeamIdFromLabel, getDecadeFromLabel } from "@/lib/gridUtils";
+import LoadingDisplay from "@/components/grid/LoadingDisplay";
+import ErrorDisplay from "@/components/grid/ErrorDisplay";
+import GridContainer from "@/components/grid/GridContainer";
 
 const GridPage = () => {
   const [puzzle, setPuzzle] = useState<PuzzleDefinition | null>(null);
@@ -80,16 +64,6 @@ const GridPage = () => {
       fetchPuzzle();
     }
   }, [today, authLoading, user]);
-
-  // Get team ID from row label
-  const getTeamIdFromLabel = (label: string): string => {
-    return TEAM_MAPPINGS[label] || "";
-  };
-
-  // Get decade start year from column label
-  const getDecadeFromLabel = (label: string): number => {
-    return DECADE_MAPPINGS[label] || 0;
-  };
 
   const validatePlayer = useCallback(async (
     playerName: string, 
@@ -247,10 +221,7 @@ const GridPage = () => {
   if (authLoading) {
     return (
       <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-[#1d3557]" />
-          <p className="text-xl text-[#1d3557]">Loading...</p>
-        </div>
+        <LoadingDisplay />
       </div>
     );
   }
@@ -272,7 +243,7 @@ const GridPage = () => {
   if (loading) {
     return (
       <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
-        <p className="text-xl text-[#1d3557]">Loading today's puzzle...</p>
+        <LoadingDisplay message="Loading today's puzzle..." />
       </div>
     );
   }
@@ -282,9 +253,7 @@ const GridPage = () => {
     return (
       <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
         <h1 className="text-4xl md:text-5xl font-bold text-[#1d3557] mb-8 font-serif italic">Double-Play Grid</h1>
-        <Card className="w-full max-w-3xl border-2 border-[#1d3557] shadow-lg p-8 text-center">
-          <p className="text-xl text-[#e76f51]">{error || "No puzzle available for today. Please check back later!"}</p>
-        </Card>
+        <ErrorDisplay error={error} />
       </div>
     );
   }
@@ -293,70 +262,16 @@ const GridPage = () => {
     <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center px-4 py-8">
       <h1 className="text-4xl md:text-5xl font-bold text-[#1d3557] mb-8 font-serif italic">Double-Play Grid</h1>
       
-      <Card className="w-full max-w-3xl border-2 border-[#1d3557] shadow-lg">
-        <CardContent className="p-6">
-          {/* Grid header with decade labels */}
-          <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-2 mb-2">
-            <div className=""></div> {/* Empty cell for top-left corner */}
-            <div className="bg-[#e76f51] text-white p-2 text-center font-semibold rounded-t-md border border-[#1d3557]">
-              {puzzle.col1_label}
-            </div>
-            <div className="bg-[#e76f51] text-white p-2 text-center font-semibold rounded-t-md border border-[#1d3557]">
-              {puzzle.col2_label}
-            </div>
-            <div className="bg-[#e76f51] text-white p-2 text-center font-semibold rounded-t-md border border-[#1d3557]">
-              {puzzle.col3_label}
-            </div>
-          </div>
-
-          {/* First row */}
-          <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-2 mb-2">
-            <div className="bg-[#e9c46a] p-2 flex items-center justify-center font-semibold rounded-l-md border border-[#1d3557]">
-              <span className="text-[#1d3557] text-center">{puzzle.row1_label}</span>
-            </div>
-            {gridState[0].map((cell, colIndex) => (
-              <GridCell
-                key={`0-${colIndex}`}
-                cell={cell}
-                rowIndex={0}
-                colIndex={colIndex}
-                onValueChange={(value) => handleCellUpdate(0, colIndex, value)}
-                onBlur={() => handleCellBlur(0, colIndex)}
-              />
-            ))}
-          </div>
-
-          {/* Second row */}
-          <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-2">
-            <div className="bg-[#e9c46a] p-2 flex items-center justify-center font-semibold rounded-l-md border border-[#1d3557]">
-              <span className="text-[#1d3557] text-center">{puzzle.row2_label}</span>
-            </div>
-            {gridState[1].map((cell, colIndex) => (
-              <GridCell
-                key={`1-${colIndex}`}
-                cell={cell}
-                rowIndex={1}
-                colIndex={colIndex}
-                onValueChange={(value) => handleCellUpdate(1, colIndex, value)}
-                onBlur={() => handleCellBlur(1, colIndex)}
-              />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="mt-6">
-        <Button 
-          onClick={handleSubmit} 
-          disabled={isSubmitting || !isGridComplete() || !areAllFilledCellsValid()}
-          className={`
-            ${isSubmitting ? 'opacity-70' : ''}
-            bg-[#e76f51] hover:bg-[#e76f51]/90 text-white px-8 py-2 rounded-md font-semibold text-lg
-          `}
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit Answers'}
-        </Button>
-      </div>
+      <GridContainer 
+        puzzle={puzzle}
+        gridState={gridState}
+        handleCellUpdate={handleCellUpdate}
+        handleCellBlur={handleCellBlur}
+        handleSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        isGridComplete={isGridComplete}
+        areAllFilledCellsValid={areAllFilledCellsValid}
+      />
     </div>
   );
 };
