@@ -54,8 +54,8 @@ const AuthCallback = () => {
     );
   }
   
-  // Redirect to the grid page when authentication is complete
-  return <Navigate to="/grid/today" replace />;
+  // Redirect to the dashboard page when authentication is complete
+  return <Navigate to="/dashboard" replace />;
 };
 
 export default AuthCallback;

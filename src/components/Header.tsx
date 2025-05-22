@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { user, signOut, loading } = useAuth();
@@ -10,9 +11,9 @@ const Header = () => {
   return (
     <header className="bg-[#f5f0e1] border-b border-[#1d3557]/10 py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1d3557] font-serif italic">
-          Double-Play Grid
-        </h1>
+        <Link to={user ? "/dashboard" : "/"} className="text-2xl sm:text-3xl font-bold text-[#1d3557] font-serif italic">
+          Game Portal
+        </Link>
         
         {loading ? (
           <div className="flex items-center">
@@ -20,6 +21,14 @@ const Header = () => {
           </div>
         ) : user ? (
           <div className="flex items-center gap-4">
+            <Link to="/dashboard">
+              <Button 
+                variant="outline"
+                className="text-[#1d3557] border-[#1d3557]/30 hover:bg-[#1d3557]/5"
+              >
+                Dashboard
+              </Button>
+            </Link>
             <span className="text-sm text-[#1d3557]/70 hidden sm:inline-block">
               {user.email}
             </span>

@@ -45,6 +45,30 @@ export type Database = {
           },
         ]
       }
+      games: {
+        Row: {
+          description: string | null
+          id: string
+          name: string
+          slug: string
+          thumbnail_url: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+          thumbnail_url?: string | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          thumbnail_url?: string | null
+        }
+        Relationships: []
+      }
       players: {
         Row: {
           debut_year: number | null
