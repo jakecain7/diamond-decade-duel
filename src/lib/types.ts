@@ -23,10 +23,3 @@ export interface PuzzleDefinition {
 export interface TeamMapping {
   [key: string]: string; // e.g., "New York Yankees": "NYA"
 }
-
-export interface PlayerSuggestion {
-  id: string;
-  name: string;
-  fullInfo?: any;
-  years?: string;
-}

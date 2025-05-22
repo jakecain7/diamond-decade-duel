@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
 import { Check, X, Loader2 } from "lucide-react";
 import { GridCell as GridCellType } from "@/lib/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -8,21 +9,12 @@ interface GridCellProps {
   cell: GridCellType;
   rowIndex: number;
   colIndex: number;
-  onValueChange: (value: string, playerId?: string) => void;
-  onClick: () => void;
-  showInputField?: boolean;
-  onBlur?: () => void;
+  onValueChange: (value: string) => void;
+  onBlur: () => void;
 }
 
-const GridCell = ({ 
-  cell, 
-  rowIndex, 
-  colIndex, 
-  onValueChange, 
-  onClick,
-  showInputField = true,
-  onBlur 
-}: GridCellProps) => {
+const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellProps) => {
+  const [isFocused, setIsFocused] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
   // Handle animation for invalid entries
@@ -38,23 +30,28 @@ const GridCell = ({
   }, [cell.isValid, cell.isValidating]);
 
   return (
-    <div 
-      className={`
-        relative h-20 md:h-24 
-        ${cell.isLocked ? 'bg-gold/90' : 'bg-cream/95 hover:bg-cream'}
-        ${isShaking ? 'animate-shake' : ''}
-        ${cell.isValid === false ? 'bg-cream/95' : ''}
-        shadow-inner transition-colors
-        ${!cell.isLocked ? 'cursor-pointer' : ''}
-        flex items-center justify-center
-        border border-navy/10
-      `}
-      onClick={() => !cell.isLocked && onClick()}
-    >
-      {/* Display player name */}
-      <div className="text-center text-navy font-medium px-2">
-        {cell.value}
-      </div>
+    <div className={`
+      relative h-20 md:h-24 
+      ${cell.isLocked ? 'bg-gold/90' : 'bg-cream/95 hover:bg-cream'}
+      ${isShaking ? 'animate-shake' : ''}
+      ${cell.isValid === false ? 'bg-cream/95' : ''}
+      shadow-inner transition-colors
+    `}>
+      <Input 
+        value={cell.value}
+        onChange={(e) => onValueChange(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => {
+          setIsFocused(false);
+          onBlur();
+        }}
+        disabled={cell.isLocked}
+        placeholder="Type player..." 
+        className={`
+          w-full h-full border-none focus:outline-none 
+          text-center ${cell.isLocked ? 'text-navy font-semibold' : 'text-navy/90'} 
+          text-lg bg-transparent`}
+      />
       
       {cell.isValidating && (
         <div className="absolute right-2 bottom-2">

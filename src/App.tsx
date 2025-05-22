@@ -23,6 +23,8 @@ const processHashParameters = async () => {
   }
 };
 
+const queryClient = new QueryClient();
+
 // Create a component that handles the auth initialization
 const AuthInitializer = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
@@ -32,33 +34,27 @@ const AuthInitializer = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// Move the App component definition to the top level
-function App() {
-  // Create the query client inside the component
-  const queryClient = new QueryClient();
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthInitializer>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Header />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/grid/today" element={<GridPage />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </AuthProvider>
-        </AuthInitializer>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AuthInitializer>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/grid/today" element={<GridPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </AuthInitializer>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
