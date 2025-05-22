@@ -9,7 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      puzzles: {
+        Row: {
+          col1_label: string
+          col2_label: string
+          col3_label: string
+          created_at: string | null
+          id: string
+          puzzle_date: string
+          row1_label: string
+          row2_label: string
+        }
+        Insert: {
+          col1_label: string
+          col2_label: string
+          col3_label: string
+          created_at?: string | null
+          id?: string
+          puzzle_date: string
+          row1_label: string
+          row2_label: string
+        }
+        Update: {
+          col1_label?: string
+          col2_label?: string
+          col3_label?: string
+          created_at?: string | null
+          id?: string
+          puzzle_date?: string
+          row1_label?: string
+          row2_label?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -9,3 +9,14 @@ export interface PuzzleDefinition {
   col2_label: string;
   col3_label: string;
 }
+
+// Define a GridCell type for managing input state
+export interface GridCell {
+  value: string;
+  isValid: boolean | null;
+  isValidating: boolean;
+  isLocked: boolean;
+}
+
+// Define the grid state as a 2D array of GridCells
+export type GridState = GridCell[][];
