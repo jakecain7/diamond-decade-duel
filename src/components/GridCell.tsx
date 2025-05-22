@@ -47,11 +47,12 @@ const GridCell = ({
         shadow-inner transition-colors
         ${!cell.isLocked ? 'cursor-pointer' : ''}
         flex items-center justify-center
+        border border-navy/10
       `}
       onClick={() => !cell.isLocked && onClick()}
     >
       {/* Display player name */}
-      <div className="text-center text-navy px-2">
+      <div className="text-center text-navy font-medium px-2">
         {cell.value}
       </div>
       

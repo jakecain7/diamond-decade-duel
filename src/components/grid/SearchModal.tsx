@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import AutocompleteInput from "./AutocompleteInput";
 import { GridCell } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -52,17 +53,17 @@ const SearchModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center">
+      <DialogContent className="sm:max-w-md bg-white p-0 overflow-hidden">
+        <DialogHeader className="px-6 pt-6 pb-2">
+          <DialogTitle className="text-center text-navy font-semibold">
             Search Player
-            <div className="text-sm font-normal text-muted-foreground mt-1">
+            <div className="text-sm font-normal text-navy/60 mt-1">
               {getSearchContext()}
             </div>
           </DialogTitle>
         </DialogHeader>
         
-        <div className="py-4">
+        <div className="p-6 pt-2">
           <AutocompleteInput 
             value={cell?.value || ""}
             onChange={handleSelect}
@@ -70,6 +71,16 @@ const SearchModal = ({
             placeholder="Type player name..."
             className="search-modal-input"
           />
+          
+          <div className="mt-6 flex justify-end">
+            <Button 
+              onClick={onClose}
+              variant="outline"
+              className="bg-white text-navy hover:bg-cream/30 border-navy/30"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
