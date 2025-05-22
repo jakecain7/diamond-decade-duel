@@ -1,3 +1,4 @@
+
 export interface GridCell {
   value: string;
   isValid: boolean | null;
