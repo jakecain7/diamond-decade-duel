@@ -6,8 +6,8 @@ import GridCell from "@/components/GridCell";
 interface GridProps {
   puzzle: PuzzleDefinition;
   gridState: any[][];
-  handleCellUpdate: (rowIndex: number, colIndex: number, value: string) => void;
-  handleCellBlur: (rowIndex: number, colIndex: number) => void;
+  handleCellUpdate: (rowIndex: number, colIndex: number, value: string, playerId?: string) => void;
+  handleCellBlur?: (rowIndex: number, colIndex: number) => void; // Now optional
 }
 
 const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps) => {
@@ -39,8 +39,8 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             cell={cell}
             rowIndex={0}
             colIndex={colIndex}
-            onValueChange={(value) => handleCellUpdate(0, colIndex, value)}
-            onBlur={() => handleCellBlur(0, colIndex)}
+            onValueChange={(value, playerId) => handleCellUpdate(0, colIndex, value, playerId)}
+            onBlur={handleCellBlur ? () => handleCellBlur(0, colIndex) : undefined}
           />
         ))}
 
@@ -54,8 +54,8 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             cell={cell}
             rowIndex={1}
             colIndex={colIndex}
-            onValueChange={(value) => handleCellUpdate(1, colIndex, value)}
-            onBlur={() => handleCellBlur(1, colIndex)}
+            onValueChange={(value, playerId) => handleCellUpdate(1, colIndex, value, playerId)}
+            onBlur={handleCellBlur ? () => handleCellBlur(1, colIndex) : undefined}
           />
         ))}
       </div>

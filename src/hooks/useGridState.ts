@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { GridState, GridCell } from "@/lib/types";
 
@@ -25,17 +24,23 @@ export function useGridState() {
   }
 
   // Update a specific cell's value
-  const updateCellValue = useCallback((rowIndex: number, colIndex: number, value: string) => {
+  const updateCellValue = useCallback((
+    rowIndex: number, 
+    colIndex: number, 
+    value: string,
+    playerId?: string
+  ) => {
     setGridState(prevState => {
       const newState = [...prevState];
       newState[rowIndex] = [...newState[rowIndex]];
       newState[rowIndex][colIndex] = {
         ...newState[rowIndex][colIndex],
         value,
+        // Only set playerId if provided, otherwise keep the existing one
+        ...(playerId !== undefined ? { playerId } : {}),
         // Reset validation state when user starts typing a new value
         isValid: null,
-        errorReason: null,
-        playerId: null
+        errorReason: null
       };
       return newState;
     });
@@ -60,7 +65,8 @@ export function useGridState() {
           isValidating: false,
           isLocked,
           errorReason,
-          playerId
+          // Only update playerId if provided
+          ...(playerId !== null ? { playerId } : {})
         };
         return newState;
       });

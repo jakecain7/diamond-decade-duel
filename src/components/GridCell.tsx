@@ -1,16 +1,16 @@
 
 import React, { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
 import { Check, X, Loader2 } from "lucide-react";
 import { GridCell as GridCellType } from "@/lib/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import AutocompleteInput from "@/components/grid/AutocompleteInput";
 
 interface GridCellProps {
   cell: GridCellType;
   rowIndex: number;
   colIndex: number;
-  onValueChange: (value: string) => void;
-  onBlur: () => void;
+  onValueChange: (value: string, playerId?: string) => void;
+  onBlur?: () => void; // Now optional since we're not using it for immediate validation
 }
 
 const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellProps) => {
@@ -29,6 +29,10 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
     }
   }, [cell.isValid, cell.isValidating]);
 
+  const handleValueChange = (value: string, playerId?: string) => {
+    onValueChange(value, playerId);
+  };
+
   return (
     <div className={`
       relative h-20 md:h-24 
@@ -37,20 +41,11 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
       ${cell.isValid === false ? 'bg-cream/95' : ''}
       shadow-inner transition-colors
     `}>
-      <Input 
+      <AutocompleteInput 
         value={cell.value}
-        onChange={(e) => onValueChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => {
-          setIsFocused(false);
-          onBlur();
-        }}
+        onChange={handleValueChange}
         disabled={cell.isLocked}
-        placeholder="Type player..." 
-        className={`
-          w-full h-full border-none focus:outline-none 
-          text-center ${cell.isLocked ? 'text-navy font-semibold' : 'text-navy/90'} 
-          text-lg bg-transparent`}
+        className="w-full h-full border-none"
       />
       
       {cell.isValidating && (

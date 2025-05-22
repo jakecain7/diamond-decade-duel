@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame } from "lucide-react";
@@ -9,8 +10,8 @@ import Button from "./Button";
 interface GridContainerProps {
   puzzle: PuzzleDefinition;
   gridState: any[][];
-  handleCellUpdate: (rowIndex: number, colIndex: number, value: string) => void;
-  handleCellBlur: (rowIndex: number, colIndex: number) => void;
+  handleCellUpdate: (rowIndex: number, colIndex: number, value: string, playerId?: string) => void;
+  handleCellBlur?: (rowIndex: number, colIndex: number) => void; // Now optional
   handleSubmit: () => void;
   isSubmitting: boolean;
   isGridComplete: () => boolean;
@@ -108,7 +109,7 @@ const GridContainer = ({
         <SubmitButton 
           onClick={handleSubmit} 
           isSubmitting={isSubmitting}
-          disabled={!isGridComplete() || !areAllFilledCellsValid()} 
+          disabled={!isGridComplete()} 
         />
       </div>
     </div>

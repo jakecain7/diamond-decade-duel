@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -67,6 +66,7 @@ const GridPage = () => {
 
   const validatePlayer = useCallback(async (
     playerName: string, 
+    playerId: string | undefined,
     rowIndex: number, 
     colIndex: number
   ) => {
@@ -94,6 +94,7 @@ const GridPage = () => {
       const { data, error } = await supabase.functions.invoke('check-answer', {
         body: {
           playerName,
+          playerId, // Pass the playerId if available for more precise validation
           rowCategoryType: "team", // For now, always "team"
           rowCategoryValue: teamId,
           columnDecade: decade
@@ -112,63 +113,18 @@ const GridPage = () => {
     }
   }, [puzzle]);
 
-  const handleCellUpdate = async (rowIndex: number, colIndex: number, value: string) => {
-    // Update the cell value immediately for responsiveness
-    updateCellValue(rowIndex, colIndex, value);
+  const handleCellUpdate = async (rowIndex: number, colIndex: number, value: string, playerId?: string) => {
+    // Update the cell value and optionally the player ID if provided
+    updateCellValue(rowIndex, colIndex, value, playerId);
+    
+    // We're not validating immediately on value change anymore
+    // Validation will happen on form submission
   };
 
+  // We're keeping this for future use, but not using it for validation on blur anymore
   const handleCellBlur = async (rowIndex: number, colIndex: number) => {
-    const cellValue = gridState[rowIndex][colIndex].value;
-    
-    // Skip validation if the cell is empty or already locked
-    if (!cellValue.trim() || gridState[rowIndex][colIndex].isLocked) return;
-    
-    try {
-      // Set the cell to validating state (shows spinner)
-      setCellValidating(rowIndex, colIndex);
-      
-      // Validate the player name against the criteria
-      const result = await validatePlayer(cellValue, rowIndex, colIndex);
-      
-      if (result.isValid) {
-        // Valid player - set the cell as valid and locked
-        setCellValidation(
-          rowIndex, 
-          colIndex, 
-          true, 
-          true, // Lock the cell
-          null, 
-          result.playerId || null
-        );
-        
-        // Show success toast
-        toast({
-          title: "Correct!",
-          description: `${result.playerFullName || cellValue} is a valid answer.`,
-          variant: "default"
-        });
-      } else {
-        // Invalid player - show error reason
-        setCellValidation(
-          rowIndex, 
-          colIndex, 
-          false, 
-          false, // Don't lock the cell
-          result.reason || "Invalid player",
-          null
-        );
-        
-        // Show feedback for invalid entries
-        toast({
-          title: "Invalid player",
-          description: result.reason || "This player doesn't match the criteria. Try another name.",
-          variant: "destructive"
-        });
-      }
-    } catch (err) {
-      console.error("Error validating player:", err);
-      setCellValidation(rowIndex, colIndex, false, false, "Error validating player");
-    }
+    // No longer triggering validation on blur
+    // Left as placeholder for future functionality if needed
   };
 
   const handleSubmit = async () => {
@@ -181,35 +137,71 @@ const GridPage = () => {
       return;
     }
     
-    if (!areAllFilledCellsValid()) {
-      toast({
-        title: "Invalid entries",
-        description: "Some of your entries are invalid. Please correct them before submitting.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     setIsSubmitting(true);
     
     try {
-      // In a real app, this would save the results to the database
-      // For now, we'll just simulate a success
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      let allValid = true;
       
-      toast({
-        title: "Success!",
-        description: "Your answers have been submitted.",
-        variant: "default"
-      });
+      // Validate each cell
+      for (let rowIndex = 0; rowIndex < gridState.length; rowIndex++) {
+        for (let colIndex = 0; colIndex < gridState[rowIndex].length; colIndex++) {
+          const cell = gridState[rowIndex][colIndex];
+          
+          // Skip already validated and locked cells
+          if (cell.isLocked && cell.isValid === true) continue;
+          
+          setCellValidating(rowIndex, colIndex);
+          
+          const result = await validatePlayer(
+            cell.value, 
+            cell.playerId, 
+            rowIndex, 
+            colIndex
+          );
+          
+          if (result.isValid) {
+            setCellValidation(
+              rowIndex, 
+              colIndex, 
+              true, 
+              true, // Lock the cell
+              null, 
+              result.playerId || cell.playerId
+            );
+          } else {
+            setCellValidation(
+              rowIndex, 
+              colIndex, 
+              false, 
+              false, // Don't lock the cell
+              result.reason || "Invalid player",
+              cell.playerId
+            );
+            allValid = false;
+          }
+        }
+      }
       
-      // Here you would typically show a results modal, calculate score, etc.
+      if (allValid) {
+        toast({
+          title: "Success!",
+          description: "All your answers are correct!",
+          variant: "default"
+        });
+        // Here you would typically show a results modal, calculate score, etc.
+      } else {
+        toast({
+          title: "Some entries are incorrect",
+          description: "Please correct the highlighted entries and try again.",
+          variant: "destructive"
+        });
+      }
       
     } catch (err) {
       console.error("Error submitting answers:", err);
       toast({
         title: "Submission error",
-        description: "An error occurred while submitting your answers. Please try again.",
+        description: "An error occurred while validating your answers. Please try again.",
         variant: "destructive"
       });
     } finally {
