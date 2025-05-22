@@ -286,6 +286,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_game_leaderboard: {
+        Args:
+          | { p_game_id: string; p_limit?: number }
+          | { p_game_id: string; p_limit?: number; p_timespan?: string }
+        Returns: {
+          high_score: number
+          player_name: string
+        }[]
+      }
       get_random_slugger: {
         Args: { exclude_id?: string }
         Returns: {

@@ -23,7 +23,7 @@ serve(async (req) => {
     );
 
     // Parse request body
-    const { gameSlug, limit = 10 } = await req.json();
+    const { gameSlug, limit = 10, timespan = 'all_time' } = await req.json();
 
     if (!gameSlug) {
       return new Response(
@@ -32,7 +32,7 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Fetching leaderboard for game slug: ${gameSlug}, limit: ${limit}`);
+    console.log(`Fetching leaderboard for game slug: ${gameSlug}, limit: ${limit}, timespan: ${timespan}`);
 
     // First, get the game ID from the slug
     const { data: gameData, error: gameError } = await supabaseClient
@@ -52,12 +52,12 @@ serve(async (req) => {
     const gameId = gameData.id;
     console.log(`Found game ID: ${gameId}`);
 
-    // Query the top scores for this game with an explicit query
-    // instead of relying on PostgREST's relationship detection
+    // Call the updated database function with the timespan parameter
     const { data: leaderboardData, error: leaderboardError } = await supabaseClient
       .rpc('get_game_leaderboard', { 
         p_game_id: gameId,
-        p_limit: limit
+        p_limit: limit,
+        p_timespan: timespan
       });
 
     if (leaderboardError) {
@@ -75,7 +75,7 @@ serve(async (req) => {
       score: entry.high_score,
     }));
 
-    console.log(`Returning ${formattedLeaderboard.length} leaderboard entries`);
+    console.log(`Returning ${formattedLeaderboard.length} leaderboard entries for timespan: ${timespan}`);
 
     // Return the leaderboard data
     return new Response(
