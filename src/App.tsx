@@ -13,6 +13,7 @@ import { supabase } from "./integrations/supabase/client";
 import AuthCallback from "./components/AuthCallback";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
+import HigherLowerHRGame from "./pages/games/HigherLowerHRGame";
 
 // Initialize Supabase auth to properly handle hash parameters
 // This ensures the client processes the URL fragment on initial load
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/grid/today" element={<GridPage />} />
+              <Route path="/games/higher-lower-hr" element={<HigherLowerHRGame />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
