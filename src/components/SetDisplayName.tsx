@@ -38,11 +38,19 @@ const SetDisplayName = () => {
 
     setIsSubmitting(true);
     try {
+      // Get the current user data
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+      
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+      
       // Update the profile with the display name
       const { error } = await supabase
         .from('profiles')
         .update({ display_name: displayName.trim() })
-        .eq('id', supabase.auth.getUser().then(response => response.data.user?.id));
+        .eq('id', userId);
 
       if (error) {
         if (error.code === '23505') {
