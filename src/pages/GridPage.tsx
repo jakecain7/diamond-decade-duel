@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { PuzzleDefinition } from "@/lib/types";
 import { useGridState } from "@/hooks/useGridState";
 import { format } from "date-fns";
+import { useAuth } from "@/contexts/AuthContext";
+import AuthForm from "@/components/AuthForm";
+import { Loader2 } from "lucide-react";
 
 const GridPage = () => {
   const [puzzle, setPuzzle] = useState<PuzzleDefinition | null>(null);
@@ -15,6 +18,7 @@ const GridPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
   
   const {
     gridState,
@@ -55,8 +59,10 @@ const GridPage = () => {
       }
     };
 
-    fetchPuzzle();
-  }, [today]);
+    if (!authLoading && user) {
+      fetchPuzzle();
+    }
+  }, [today, authLoading, user]);
 
   // Mock player validation function - in a real app, this would check against the database
   const validatePlayer = useCallback(async (
@@ -175,10 +181,35 @@ const GridPage = () => {
     }
   };
 
-  // Display loading state
+  // Display loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-[#1d3557]" />
+          <p className="text-xl text-[#1d3557]">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show the auth form
+  if (!user) {
+    return (
+      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md border-2 border-[#1d3557] shadow-lg">
+          <CardContent className="p-6">
+            <AuthForm />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Display loading state while grid is loading
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
+      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
         <p className="text-xl text-[#1d3557]">Loading today's puzzle...</p>
       </div>
     );
@@ -187,7 +218,7 @@ const GridPage = () => {
   // Display error message if no puzzle is found
   if (error || !puzzle) {
     return (
-      <div className="min-h-screen bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
+      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
         <h1 className="text-4xl md:text-5xl font-bold text-[#1d3557] mb-8 font-serif italic">Double-Play Grid</h1>
         <Card className="w-full max-w-3xl border-2 border-[#1d3557] shadow-lg p-8 text-center">
           <p className="text-xl text-[#e76f51]">{error || "No puzzle available for today. Please check back later!"}</p>
@@ -197,7 +228,7 @@ const GridPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f0e1] flex flex-col items-center px-4 py-8">
+    <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center px-4 py-8">
       <h1 className="text-4xl md:text-5xl font-bold text-[#1d3557] mb-8 font-serif italic">Double-Play Grid</h1>
       
       <Card className="w-full max-w-3xl border-2 border-[#1d3557] shadow-lg">
