@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, profile, signOut, loading } = useAuth();
   
   return (
     <header className="bg-[#f5f0e1] border-b border-[#1d3557]/10 py-4">
@@ -30,7 +30,7 @@ const Header = () => {
               </Button>
             </Link>
             <span className="text-sm text-[#1d3557]/70 hidden sm:inline-block">
-              {user.email}
+              {profile?.display_name || user.email}
             </span>
             <Button 
               variant="outline"

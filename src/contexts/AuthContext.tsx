@@ -4,12 +4,22 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+interface Profile {
+  id: string;
+  display_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 interface AuthContextType {
   session: Session | null;
   user: User | null;
+  profile: Profile | null;
   loading: boolean;
+  hasDisplayName: boolean;
   signInWithEmail: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,8 +27,33 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(true);
   const { toast } = useToast();
+
+  // Fetch user profile from the database
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      setProfileLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      setProfile(data as Profile);
+    } catch (error) {
+      console.error('Exception when fetching profile:', error);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
 
   // Add user to Beehiiv newsletter
   const addUserToBeehiiv = async (email: string) => {
@@ -40,6 +75,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Refresh user profile
+  const refreshProfile = async () => {
+    if (user?.id) {
+      await fetchUserProfile(user.id);
+    }
+  };
+
   useEffect(() => {
     let previousEmail: string | null = null;
     
@@ -51,6 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (event === 'SIGNED_IN') {
           const userEmail = currentSession?.user?.email;
+          const userId = currentSession?.user?.id;
           
           toast({
             title: "Welcome back!",
@@ -68,12 +111,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               addUserToBeehiiv(userEmail);
             }, 0);
           }
+
+          // Fetch user profile if we have a user ID
+          if (userId) {
+            setTimeout(() => {
+              fetchUserProfile(userId);
+            }, 0);
+          }
         } else if (event === 'SIGNED_OUT') {
           toast({
             title: "Signed out",
             description: "You've been successfully signed out.",
           });
           previousEmail = null;
+          setProfile(null);
         }
       }
     );
@@ -82,6 +133,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      
+      if (currentSession?.user?.id) {
+        fetchUserProfile(currentSession.user.id);
+      } else {
+        setProfileLoading(false);
+      }
+      
       setLoading(false);
     });
 
@@ -134,9 +192,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const value = {
     session,
     user,
-    loading,
+    profile,
+    loading: loading || profileLoading,
+    hasDisplayName: !!profile?.display_name,
     signInWithEmail,
     signOut,
+    refreshProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

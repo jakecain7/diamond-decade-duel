@@ -15,6 +15,7 @@ import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import HigherLowerHRGame from "./pages/games/HigherLowerHRGame";
 import ComingSoon from "./pages/games/ComingSoon";
+import SetDisplayNamePage from "./pages/SetDisplayNamePage";
 
 // Initialize Supabase auth to properly handle hash parameters
 // This ensures the client processes the URL fragment on initial load
@@ -53,6 +54,7 @@ const App = () => (
               <Route path="/games/higher-lower-hr" element={<HigherLowerHRGame />} />
               <Route path="/games/coming-soon/:gameSlug" element={<ComingSoon />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/set-display-name" element={<SetDisplayNamePage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

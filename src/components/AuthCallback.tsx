@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AuthCallback = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { hasDisplayName } = useAuth();
   
   useEffect(() => {
     const handleAuthRedirect = async () => {
@@ -52,6 +54,11 @@ const AuthCallback = () => {
         </div>
       </div>
     );
+  }
+  
+  // If user doesn't have a display name, redirect to set display name page
+  if (!hasDisplayName) {
+    return <Navigate to="/set-display-name" replace />;
   }
   
   // Redirect to the dashboard page when authentication is complete
