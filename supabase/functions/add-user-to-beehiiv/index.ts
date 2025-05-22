@@ -10,7 +10,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4"
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
 
 serve(async (req: Request) => {
   // Handle CORS preflight requests
@@ -24,22 +25,19 @@ serve(async (req: Request) => {
     const BEEHIIV_API_KEY = Deno.env.get('BEEHIIV_API_KEY') || '';
     const PUBLICATION_ID = 'pub_fa90dbc7-fd6b-4dc3-a09b-f39d70d80c38';
     const AUTOMATION_ID = '243b8a2f-1ca5-469c-912a-bc1c9c367e65';
-
+    
     // Create a Supabase client with the service role key
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     
-    // Parse the request body
-    const { record = {}, type } = await req.json();
-    console.log(`Webhook received: ${type} for record:`, record);
+    // Parse the request body to get the email
+    const { email } = await req.json();
+    console.log(`Received request to add user with email: ${email}`);
     
-    // Extract the email from the webhook payload
-    const userEmail = record.email;
-    
-    if (!userEmail) {
-      throw new Error("Email is missing from the webhook payload");
+    if (!email) {
+      throw new Error("Email is missing from the request body");
     }
 
-    console.log(`Adding user with email: ${userEmail} to Beehiiv`);
+    console.log(`Adding user with email: ${email} to Beehiiv`);
     
     // Prepare the request to Beehiiv API
     const response = await fetch(
@@ -51,7 +49,7 @@ serve(async (req: Request) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: userEmail,
+          email: email,
           send_welcome_email: false,
           automation_ids: [AUTOMATION_ID]
         })

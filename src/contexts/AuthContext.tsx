@@ -20,7 +20,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Add user to Beehiiv newsletter
+  const addUserToBeehiiv = async (email: string) => {
+    try {
+      console.log('Adding user to Beehiiv newsletter:', email);
+      
+      const { data, error } = await supabase.functions.invoke('add-user-to-beehiiv', {
+        body: { email }
+      });
+      
+      if (error) {
+        console.error('Error adding user to Beehiiv:', error);
+        return;
+      }
+      
+      console.log('Successfully added user to Beehiiv:', data);
+    } catch (error) {
+      console.error('Exception when adding user to Beehiiv:', error);
+    }
+  };
+
   useEffect(() => {
+    let previousEmail: string | null = null;
+    
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
@@ -28,15 +50,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(currentSession?.user ?? null);
         
         if (event === 'SIGNED_IN') {
+          const userEmail = currentSession?.user?.email;
+          
           toast({
             title: "Welcome back!",
             description: "You've successfully signed in.",
           });
+          
+          // Only add to Beehiiv if this is a different email than the last one
+          // This prevents duplicate calls when refreshing the page
+          if (userEmail && userEmail !== previousEmail) {
+            previousEmail = userEmail;
+            
+            // Using setTimeout to avoid blocking the auth flow
+            // and to prevent potential Supabase auth deadlocks
+            setTimeout(() => {
+              addUserToBeehiiv(userEmail);
+            }, 0);
+          }
         } else if (event === 'SIGNED_OUT') {
           toast({
             title: "Signed out",
             description: "You've been successfully signed out.",
           });
+          previousEmail = null;
         }
       }
     );
