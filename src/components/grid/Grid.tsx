@@ -12,25 +12,26 @@ interface GridProps {
 
 const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps) => {
   return (
-    <div>
+    <div className="relative">
       {/* Grid header with decade labels */}
-      <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-2 mb-2">
+      <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-[1px]">
         <div className=""></div> {/* Empty cell for top-left corner */}
-        <div className="bg-[#e76f51] text-white p-2 text-center font-semibold rounded-t-md border border-[#1d3557]">
+        <div className="bg-brick text-cream p-2 text-center font-semibold rounded-t-lg">
           {puzzle.col1_label}
         </div>
-        <div className="bg-[#e76f51] text-white p-2 text-center font-semibold rounded-t-md border border-[#1d3557]">
+        <div className="bg-brick text-cream p-2 text-center font-semibold rounded-t-lg">
           {puzzle.col2_label}
         </div>
-        <div className="bg-[#e76f51] text-white p-2 text-center font-semibold rounded-t-md border border-[#1d3557]">
+        <div className="bg-brick text-cream p-2 text-center font-semibold rounded-t-lg">
           {puzzle.col3_label}
         </div>
       </div>
 
-      {/* First row */}
-      <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-2 mb-2">
-        <div className="bg-[#e9c46a] p-2 flex items-center justify-center font-semibold rounded-l-md border border-[#1d3557]">
-          <span className="text-[#1d3557] text-center">{puzzle.row1_label}</span>
+      {/* Grid body with team rows */}
+      <div className="grid grid-cols-[120px_1fr_1fr_1fr] grid-rows-2 gap-[1px] bg-navy rounded-b-lg overflow-hidden">
+        {/* First row */}
+        <div className="bg-gold p-2 flex items-center justify-center font-semibold h-20 md:h-24">
+          <span className="text-navy text-center">{puzzle.row1_label}</span>
         </div>
         {gridState[0].map((cell, colIndex) => (
           <GridCell
@@ -42,12 +43,10 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             onBlur={() => handleCellBlur(0, colIndex)}
           />
         ))}
-      </div>
 
-      {/* Second row */}
-      <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-2">
-        <div className="bg-[#e9c46a] p-2 flex items-center justify-center font-semibold rounded-l-md border border-[#1d3557]">
-          <span className="text-[#1d3557] text-center">{puzzle.row2_label}</span>
+        {/* Second row */}
+        <div className="bg-gold p-2 flex items-center justify-center font-semibold h-20 md:h-24">
+          <span className="text-navy text-center">{puzzle.row2_label}</span>
         </div>
         {gridState[1].map((cell, colIndex) => (
           <GridCell

@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { PuzzleDefinition } from "@/lib/types";
 import { useGridState } from "@/hooks/useGridState";
@@ -220,7 +219,7 @@ const GridPage = () => {
   // Display loading state while auth is loading
   if (authLoading) {
     return (
-      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
+      <div className="min-h-[calc(100vh-68px)] bg-cream flex flex-col items-center justify-center px-4 py-8">
         <LoadingDisplay />
       </div>
     );
@@ -229,12 +228,11 @@ const GridPage = () => {
   // If not authenticated, show the auth form
   if (!user) {
     return (
-      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
-        <Card className="w-full max-w-md border-2 border-[#1d3557] shadow-lg">
-          <CardContent className="p-6">
-            <AuthForm />
-          </CardContent>
-        </Card>
+      <div className="min-h-[calc(100vh-68px)] bg-cream flex flex-col items-center justify-center px-4 py-8">
+        <h1 className="font-heading text-4xl md:text-5xl text-navy mb-8">Double-Play Grid</h1>
+        <div className="w-full max-w-md border-2 border-navy shadow-[0_4px_12px_rgba(0,0,0,0.08)] bg-cream rounded-2xl p-6">
+          <AuthForm />
+        </div>
       </div>
     );
   }
@@ -242,7 +240,7 @@ const GridPage = () => {
   // Display loading state while grid is loading
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
+      <div className="min-h-[calc(100vh-68px)] bg-cream flex flex-col items-center justify-center px-4 py-8">
         <LoadingDisplay message="Loading today's puzzle..." />
       </div>
     );
@@ -251,17 +249,15 @@ const GridPage = () => {
   // Display error message if no puzzle is found
   if (error || !puzzle) {
     return (
-      <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center justify-center px-4 py-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#1d3557] mb-8 font-serif italic">Double-Play Grid</h1>
+      <div className="min-h-[calc(100vh-68px)] bg-cream flex flex-col items-center justify-center px-4 py-8">
+        <h1 className="font-heading text-4xl md:text-5xl text-navy mb-8">Double-Play Grid</h1>
         <ErrorDisplay error={error} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] flex flex-col items-center px-4 py-8">
-      <h1 className="text-4xl md:text-5xl font-bold text-[#1d3557] mb-8 font-serif italic">Double-Play Grid</h1>
-      
+    <div className="min-h-[calc(100vh-68px)] bg-cream">
       <GridContainer 
         puzzle={puzzle}
         gridState={gridState}

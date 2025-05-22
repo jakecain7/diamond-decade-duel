@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Check, X, Loader2 } from "lucide-react";
 import { GridCell as GridCellType } from "@/lib/types";
@@ -15,14 +15,27 @@ interface GridCellProps {
 
 const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+
+  // Handle animation for invalid entries
+  useEffect(() => {
+    if (cell.isValid === false && !cell.isValidating) {
+      setIsShaking(true);
+      const timer = setTimeout(() => {
+        setIsShaking(false);
+      }, 800);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [cell.isValid, cell.isValidating]);
 
   return (
     <div className={`
-      border-2 relative 
-      ${cell.isLocked ? 'bg-green-50 border-green-500' : 'bg-[#f8edeb] border-[#1d3557]'}
-      ${isFocused ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
-      ${cell.isValid === false ? 'border-red-500' : ''}
-      rounded-md p-1 transition-colors
+      relative h-20 md:h-24 
+      ${cell.isLocked ? 'bg-gold/90' : 'bg-cream/95 hover:bg-cream'}
+      ${isShaking ? 'animate-shake' : ''}
+      ${cell.isValid === false ? 'bg-cream/95' : ''}
+      shadow-inner transition-colors
     `}>
       <Input 
         value={cell.value}
@@ -34,18 +47,21 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
         }}
         disabled={cell.isLocked}
         placeholder="Type player..." 
-        className="border-none bg-transparent focus:ring-0 h-10 text-center"
+        className={`
+          w-full h-full border-none focus:outline-none 
+          text-center ${cell.isLocked ? 'text-navy font-semibold' : 'text-navy/90'} 
+          text-lg bg-transparent`}
       />
       
       {cell.isValidating && (
-        <div className="absolute right-2 top-3">
-          <Loader2 className="h-4 w-4 animate-spin text-[#e76f51]" />
+        <div className="absolute right-2 bottom-2">
+          <Loader2 className="h-4 w-4 animate-spin text-brick" />
         </div>
       )}
       
       {cell.isValid === true && cell.value !== "" && !cell.isValidating && (
-        <div className="absolute right-2 top-3">
-          <Check className="h-4 w-4 text-green-500" />
+        <div className="absolute right-2 bottom-2">
+          <Check className="h-4 w-4 text-green-600" />
         </div>
       )}
 
@@ -53,8 +69,8 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="absolute right-2 top-3 cursor-help">
-                <X className="h-4 w-4 text-red-500" />
+              <div className="absolute right-2 bottom-2 cursor-help">
+                <X className="h-4 w-4 text-brick" />
               </div>
             </TooltipTrigger>
             <TooltipContent>
