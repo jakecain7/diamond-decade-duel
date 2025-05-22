@@ -72,14 +72,22 @@ const HigherLowerHRGame: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-navy p-6">
       <div className="w-full max-w-[460px] bg-cream rounded-3xl p-6 shadow-lg">
         {/* Score and Streak Bar */}
-        <div className="flex justify-between items-end bg-navy text-cream p-4 rounded-lg mb-6 h-16">
+        <div className="flex justify-between items-center bg-navy text-cream p-4 rounded-lg mb-6 h-16">
           <div>
-            <div className="text-sm font-medium uppercase">SCORE</div>
-            <div className="text-2xl md:text-3xl font-bold">{score}</div>
+            <div className="text-xs font-medium uppercase">Score</div>
+            <div className="text-2xl font-bold">{score}</div>
           </div>
+          
+          {personalBestScore !== null && (
+            <div className="text-center">
+              <div className="text-xs font-medium uppercase">Best</div>
+              <div className="text-2xl font-bold">{personalBestScore}</div>
+            </div>
+          )}
+          
           <div className="text-right">
-            <div className="text-sm font-medium uppercase">STREAK</div>
-            <div className="text-2xl md:text-3xl font-bold">{streak}x</div>
+            <div className="text-xs font-medium uppercase">Streak</div>
+            <div className="text-2xl font-bold">{streak}x</div>
           </div>
         </div>
         
@@ -104,8 +112,12 @@ const HigherLowerHRGame: React.FC = () => {
         {nextPlayer && (
           <Card className={`mb-8 border-2 border-navy rounded-xl overflow-hidden shadow-md ${gamePhase === 'showingResult' && feedbackMessage.includes('Wrong') ? 'animate-shake' : gamePhase === 'showingResult' && !feedbackMessage.includes('Wrong') ? 'animate-scale-in' : ''}`}>
             <div className="p-4 text-center">
-              <div className="font-bold text-navy">{gamePhase === 'showingResult' || gamePhase === 'gameOver' ? nextPlayer.playerName : "???"}</div>
-              <div className="text-4xl font-heading font-bold text-navy py-4 opacity-100">
+              <div className="font-bold text-navy">
+                {gamePhase === 'showingResult' || gamePhase === 'gameOver' 
+                  ? nextPlayer.playerName 
+                  : nextPlayer.playerName}
+              </div>
+              <div className="text-4xl font-heading font-bold text-navy py-4">
                 {gamePhase === 'showingResult' || gamePhase === 'gameOver' 
                   ? `${nextPlayer.careerHR} HR` 
                   : <span className="opacity-40">???</span>}
