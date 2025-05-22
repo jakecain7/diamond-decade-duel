@@ -31,6 +31,22 @@ const HigherLowerHRGame: React.FC = () => {
     );
   }
 
+  // Format the career span text
+  const formatCareerSpan = (debutYear?: number | null, finalYear?: number | null) => {
+    if (debutYear && finalYear) {
+      return `${debutYear} - ${finalYear}`;
+    } else if (debutYear) {
+      return `${debutYear} - present`;
+    }
+    return 'Career span unknown';
+  };
+
+  // Format teams played for
+  const formatTeams = (teams?: string[]) => {
+    if (!teams || teams.length === 0) return 'Teams unknown';
+    return teams.join(', ');
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <h1 className="text-3xl font-bold text-center mb-8 text-navy">Higher or Lower: Career HR</h1>
@@ -51,6 +67,16 @@ const HigherLowerHRGame: React.FC = () => {
           <div className="text-5xl font-bold text-center py-6 text-brick">
             {currentPlayer?.careerHR} HRs
           </div>
+          <div className="mt-4 text-sm">
+            <div className="mb-1">
+              <span className="font-semibold">Career: </span>
+              {formatCareerSpan(currentPlayer?.debutYear, currentPlayer?.finalYear)}
+            </div>
+            <div>
+              <span className="font-semibold">Teams: </span>
+              {formatTeams(currentPlayer?.teamsPlayedFor)}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -67,6 +93,18 @@ const HigherLowerHRGame: React.FC = () => {
                 ? `${nextPlayer.careerHR} HRs` 
                 : '?'}
             </div>
+            {(gamePhase === 'showingResult' || gamePhase === 'gameOver') && (
+              <div className="mt-4 text-sm">
+                <div className="mb-1">
+                  <span className="font-semibold">Career: </span>
+                  {formatCareerSpan(nextPlayer?.debutYear, nextPlayer?.finalYear)}
+                </div>
+                <div>
+                  <span className="font-semibold">Teams: </span>
+                  {formatTeams(nextPlayer?.teamsPlayedFor)}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

@@ -17,11 +17,14 @@ interface GetRandomPlayerRequest {
   excludePlayerId?: string;
 }
 
-// Interface for the player response
+// Enhanced interface for the player response to include new fields
 interface PlayerResponse {
   playerId: string;
   playerName: string;
   careerHR: number;
+  debutYear: number | null;
+  finalYear: number | null;
+  teamsPlayedFor: string[];
 }
 
 serve(async (req: Request) => {
@@ -40,11 +43,7 @@ serve(async (req: Request) => {
     
     console.log(`Fetching random slugger. Excluding player: ${excludePlayerId || 'none'}`);
     
-    // SQL query to get a random "slugger" player with career HR stats
-    // This query:
-    // 1. Finds players with significant career stats (AB > 500 OR HR > 20)
-    // 2. Excludes the specified player if provided
-    // 3. Returns one random player along with their career HR total
+    // Call the updated SQL function which now returns more player information
     const { data: playerData, error } = await supabase
       .rpc('get_random_slugger', { exclude_id: excludePlayerId || null });
     
@@ -74,11 +73,14 @@ serve(async (req: Request) => {
     // Extract the player from the result
     const player = playerData[0];
     
-    // Format the response
+    // Format the enhanced response with new fields
     const response: PlayerResponse = {
       playerId: player.id,
       playerName: `${player.name_first} ${player.name_last}`,
-      careerHR: player.career_hr
+      careerHR: player.career_hr,
+      debutYear: player.debut_year,
+      finalYear: player.final_year,
+      teamsPlayedFor: player.teams_played_for_names || []
     };
     
     console.log(`Found player: ${response.playerName} with ${response.careerHR} career HR`);

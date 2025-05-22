@@ -7,6 +7,9 @@ interface Player {
   playerId: string;
   playerName: string;
   careerHR: number;
+  debutYear?: number | null;
+  finalYear?: number | null;
+  teamsPlayedFor?: string[];
 }
 
 type GamePhase = 
@@ -42,7 +45,10 @@ export function useHigherLowerGame() {
       return {
         playerId: data.playerId,
         playerName: data.playerName,
-        careerHR: data.careerHR
+        careerHR: data.careerHR,
+        debutYear: data.debutYear,
+        finalYear: data.finalYear,
+        teamsPlayedFor: data.teamsPlayedFor
       };
     } catch (error) {
       console.error('Exception fetching random player:', error);

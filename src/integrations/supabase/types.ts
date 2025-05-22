@@ -227,6 +227,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_random_slugger: {
+        Args: { exclude_id?: string }
+        Returns: {
+          id: string
+          name_first: string
+          name_last: string
+          career_hr: number
+          debut_year: number
+          final_year: number
+          teams_played_for_names: string[]
+        }[]
+      }
       gtrgm_compress: {
         Args: { "": unknown }
         Returns: unknown
