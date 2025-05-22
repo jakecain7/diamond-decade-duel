@@ -12,7 +12,7 @@ const Header = () => {
     <header className="bg-[#f5f0e1] border-b border-[#1d3557]/10 py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
         <Link to={user ? "/dashboard" : "/"} className="text-2xl sm:text-3xl font-bold text-[#1d3557] font-serif italic">
-          Game Portal
+          Baseball Puzzles
         </Link>
         
         {loading ? (
@@ -20,13 +20,21 @@ const Header = () => {
             <Loader2 className="h-5 w-5 animate-spin text-[#1d3557]" />
           </div>
         ) : user ? (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link to="/dashboard">
               <Button 
                 variant="outline"
-                className="text-[#1d3557] border-[#1d3557]/30 hover:bg-[#1d3557]/5"
+                className="text-sm sm:text-base text-[#1d3557] border-[#1d3557]/30 hover:bg-[#1d3557]/5"
               >
                 Dashboard
+              </Button>
+            </Link>
+            <Link to="/leaderboard">
+              <Button 
+                variant="outline"
+                className="text-sm sm:text-base text-[#1d3557] border-[#1d3557]/30 hover:bg-[#1d3557]/5"
+              >
+                Leaderboard
               </Button>
             </Link>
             <span className="text-sm text-[#1d3557]/70 hidden sm:inline-block">
@@ -35,7 +43,7 @@ const Header = () => {
             <Button 
               variant="outline"
               onClick={signOut}
-              className="text-[#1d3557] border-[#1d3557]/30 hover:bg-[#1d3557]/5"
+              className="text-sm sm:text-base text-[#1d3557] border-[#1d3557]/30 hover:bg-[#1d3557]/5"
             >
               Sign Out
             </Button>
