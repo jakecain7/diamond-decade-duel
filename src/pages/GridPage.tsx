@@ -5,12 +5,29 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import GridCell from "@/components/GridCell";
 import { supabase } from "@/integrations/supabase/client";
-import { PuzzleDefinition } from "@/lib/types";
+import { PuzzleDefinition, TeamMapping } from "@/lib/types";
 import { useGridState } from "@/hooks/useGridState";
 import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/AuthForm";
 import { Loader2 } from "lucide-react";
+
+// Mapping of team names to team IDs (would ideally come from database)
+const TEAM_MAPPINGS: TeamMapping = {
+  "New York Yankees": "NYA",
+  "Boston Red Sox": "BOS",
+  "Chicago Cubs": "CHN",
+  "Los Angeles Dodgers": "LAN",
+  // Add more mappings as needed for your puzzles
+};
+
+// Mapping of decade labels to decade start years
+const DECADE_MAPPINGS: { [key: string]: number } = {
+  "1970s": 1970,
+  "1980s": 1980,
+  "1990s": 1990,
+  // Add more mappings as needed
+};
 
 const GridPage = () => {
   const [puzzle, setPuzzle] = useState<PuzzleDefinition | null>(null);
@@ -64,24 +81,62 @@ const GridPage = () => {
     }
   }, [today, authLoading, user]);
 
-  // Mock player validation function - in a real app, this would check against the database
+  // Get team ID from row label
+  const getTeamIdFromLabel = (label: string): string => {
+    return TEAM_MAPPINGS[label] || "";
+  };
+
+  // Get decade start year from column label
+  const getDecadeFromLabel = (label: string): number => {
+    return DECADE_MAPPINGS[label] || 0;
+  };
+
   const validatePlayer = useCallback(async (
     playerName: string, 
     rowIndex: number, 
-    colIndex: number,
-    rowLabel: string,
-    colLabel: string
+    colIndex: number
   ) => {
-    if (!playerName.trim()) return false;
+    if (!playerName.trim() || !puzzle) return false;
     
-    // For demo purposes, we'll just simulate a check after a delay
-    // Later, this would be replaced with an actual database check
-    await new Promise(resolve => setTimeout(resolve, 700));
+    // Get row label (team) and column label (decade)
+    const rowLabel = rowIndex === 0 ? puzzle.row1_label : puzzle.row2_label;
+    const colLabel = colIndex === 0 
+      ? puzzle.col1_label 
+      : colIndex === 1 
+        ? puzzle.col2_label 
+        : puzzle.col3_label;
     
-    // For now, we'll consider any name with at least 3 characters as valid
-    // This is just for demo purposes
-    return playerName.trim().length >= 3;
-  }, []);
+    // Get team ID and decade
+    const teamId = getTeamIdFromLabel(rowLabel);
+    const decade = getDecadeFromLabel(colLabel);
+    
+    if (!teamId || !decade) {
+      console.error("Invalid team or decade mapping", { rowLabel, colLabel, teamId, decade });
+      return { isValid: false, reason: "Invalid puzzle configuration" };
+    }
+    
+    try {
+      // Call the check-answer Edge Function
+      const { data, error } = await supabase.functions.invoke('check-answer', {
+        body: {
+          playerName,
+          rowCategoryType: "team", // For now, always "team"
+          rowCategoryValue: teamId,
+          columnDecade: decade
+        }
+      });
+      
+      if (error) {
+        console.error("Error calling check-answer function:", error);
+        return { isValid: false, reason: "Error validating answer" };
+      }
+      
+      return data;
+    } catch (err) {
+      console.error("Failed to validate player:", err);
+      return { isValid: false, reason: "Validation service error" };
+    }
+  }, [puzzle]);
 
   const handleCellUpdate = async (rowIndex: number, colIndex: number, value: string) => {
     // Update the cell value immediately for responsiveness
@@ -98,33 +153,47 @@ const GridPage = () => {
       // Set the cell to validating state (shows spinner)
       setCellValidating(rowIndex, colIndex);
       
-      // Get the row and column labels for validation context
-      if (!puzzle) return;
-      
-      const rowLabel = rowIndex === 0 ? puzzle.row1_label : puzzle.row2_label;
-      const colLabel = colIndex === 0 
-        ? puzzle.col1_label 
-        : colIndex === 1 
-          ? puzzle.col2_label 
-          : puzzle.col3_label;
-      
       // Validate the player name against the criteria
-      const isValid = await validatePlayer(cellValue, rowIndex, colIndex, rowLabel, colLabel);
+      const result = await validatePlayer(cellValue, rowIndex, colIndex);
       
-      // Update the cell's validation state
-      setCellValidation(rowIndex, colIndex, isValid);
-      
-      // Show feedback for invalid entries
-      if (!isValid) {
+      if (result.isValid) {
+        // Valid player - set the cell as valid and locked
+        setCellValidation(
+          rowIndex, 
+          colIndex, 
+          true, 
+          true, // Lock the cell
+          null, 
+          result.playerId || null
+        );
+        
+        // Show success toast
+        toast({
+          title: "Correct!",
+          description: `${result.playerFullName || cellValue} is a valid answer.`,
+          variant: "default"
+        });
+      } else {
+        // Invalid player - show error reason
+        setCellValidation(
+          rowIndex, 
+          colIndex, 
+          false, 
+          false, // Don't lock the cell
+          result.reason || "Invalid player",
+          null
+        );
+        
+        // Show feedback for invalid entries
         toast({
           title: "Invalid player",
-          description: "This player doesn't match the criteria. Try another name.",
+          description: result.reason || "This player doesn't match the criteria. Try another name.",
           variant: "destructive"
         });
       }
     } catch (err) {
       console.error("Error validating player:", err);
-      setCellValidation(rowIndex, colIndex, false);
+      setCellValidation(rowIndex, colIndex, false, false, "Error validating player");
     }
   };
 
@@ -153,13 +222,6 @@ const GridPage = () => {
       // In a real app, this would save the results to the database
       // For now, we'll just simulate a success
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Lock all cells
-      gridState.forEach((row, rowIndex) => {
-        row.forEach((_, colIndex) => {
-          setCellValidation(rowIndex, colIndex, true, true);
-        });
-      });
       
       toast({
         title: "Success!",

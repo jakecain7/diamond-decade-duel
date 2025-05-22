@@ -1,8 +1,9 @@
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Check, Loader2 } from "lucide-react";
+import { Check, X, Loader2 } from "lucide-react";
 import { GridCell as GridCellType } from "@/lib/types";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface GridCellProps {
   cell: GridCellType;
@@ -46,6 +47,21 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
         <div className="absolute right-2 top-3">
           <Check className="h-4 w-4 text-green-500" />
         </div>
+      )}
+
+      {cell.isValid === false && cell.errorReason && !cell.isValidating && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="absolute right-2 top-3 cursor-help">
+                <X className="h-4 w-4 text-red-500" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm">{cell.errorReason}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
     </div>
   );

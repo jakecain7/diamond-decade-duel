@@ -1,8 +1,17 @@
+export interface GridCell {
+  value: string;
+  isValid: boolean | null;
+  isValidating: boolean;
+  isLocked: boolean;
+  errorReason?: string | null;
+  playerId?: string | null;
+}
 
-// Define the PuzzleDefinition type for our daily baseball puzzles
+export type GridState = GridCell[][];
+
 export interface PuzzleDefinition {
-  id?: string;
-  puzzle_date?: string;
+  id: string;
+  puzzle_date: string;
   row1_label: string;
   row2_label: string;
   col1_label: string;
@@ -10,13 +19,6 @@ export interface PuzzleDefinition {
   col3_label: string;
 }
 
-// Define a GridCell type for managing input state
-export interface GridCell {
-  value: string;
-  isValid: boolean | null;
-  isValidating: boolean;
-  isLocked: boolean;
+export interface TeamMapping {
+  [key: string]: string; // e.g., "New York Yankees": "NYA"
 }
-
-// Define the grid state as a 2D array of GridCells
-export type GridState = GridCell[][];

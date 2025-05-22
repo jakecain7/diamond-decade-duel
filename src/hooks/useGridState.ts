@@ -18,7 +18,9 @@ export function useGridState() {
       value: "",
       isValid: null,
       isValidating: false,
-      isLocked: false
+      isLocked: false,
+      errorReason: null,
+      playerId: null
     };
   }
 
@@ -29,7 +31,11 @@ export function useGridState() {
       newState[rowIndex] = [...newState[rowIndex]];
       newState[rowIndex][colIndex] = {
         ...newState[rowIndex][colIndex],
-        value
+        value,
+        // Reset validation state when user starts typing a new value
+        isValid: null,
+        errorReason: null,
+        playerId: null
       };
       return newState;
     });
@@ -37,7 +43,14 @@ export function useGridState() {
 
   // Set a cell's validation state
   const setCellValidation = useCallback(
-    (rowIndex: number, colIndex: number, isValid: boolean, isLocked: boolean = false) => {
+    (
+      rowIndex: number, 
+      colIndex: number, 
+      isValid: boolean, 
+      isLocked: boolean = false,
+      errorReason: string | null = null,
+      playerId: string | null = null
+    ) => {
       setGridState(prevState => {
         const newState = [...prevState];
         newState[rowIndex] = [...newState[rowIndex]];
@@ -45,7 +58,9 @@ export function useGridState() {
           ...newState[rowIndex][colIndex],
           isValid,
           isValidating: false,
-          isLocked
+          isLocked,
+          errorReason,
+          playerId
         };
         return newState;
       });
