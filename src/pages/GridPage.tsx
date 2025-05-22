@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -68,7 +67,8 @@ const GridPage = () => {
   const validatePlayer = useCallback(async (
     playerName: string, 
     rowIndex: number, 
-    colIndex: number
+    colIndex: number,
+    playerId?: string | null
   ) => {
     if (!playerName.trim() || !puzzle) return false;
     
@@ -78,7 +78,9 @@ const GridPage = () => {
       ? puzzle.col1_label 
       : colIndex === 1 
         ? puzzle.col2_label 
-        : puzzle.col3_label;
+        : colIndex === 3
+          ? puzzle.col3_label
+          : puzzle.col3_label;
     
     // Get team ID and decade
     const teamId = getTeamIdFromLabel(rowLabel);
@@ -96,7 +98,8 @@ const GridPage = () => {
           playerName,
           rowCategoryType: "team", // For now, always "team"
           rowCategoryValue: teamId,
-          columnDecade: decade
+          columnDecade: decade,
+          playerId
         }
       });
       
@@ -115,6 +118,61 @@ const GridPage = () => {
   const handleCellUpdate = async (rowIndex: number, colIndex: number, value: string) => {
     // Update the cell value immediately for responsiveness
     updateCellValue(rowIndex, colIndex, value);
+  };
+
+  const handleSuggestionSelect = async (rowIndex: number, colIndex: number, suggestion: any) => {
+    console.log("Suggestion selected:", suggestion);
+    
+    // Update the cell with the suggested player name
+    updateCellValue(rowIndex, colIndex, suggestion.name);
+    
+    // Validate the suggested player
+    try {
+      // Set the cell to validating state (shows spinner)
+      setCellValidating(rowIndex, colIndex);
+      
+      // Use the player ID from the suggestion for more accurate validation
+      const result = await validatePlayer(suggestion.name, rowIndex, colIndex, suggestion.id);
+      
+      if (result.isValid) {
+        // Valid player - set the cell as valid and locked
+        setCellValidation(
+          rowIndex, 
+          colIndex, 
+          true, 
+          true, // Lock the cell
+          null, 
+          result.playerId || suggestion.id
+        );
+        
+        // Show success toast
+        toast({
+          title: "Correct!",
+          description: `${result.playerFullName || suggestion.name} is a valid answer.`,
+          variant: "default"
+        });
+      } else {
+        // Invalid player - show error reason
+        setCellValidation(
+          rowIndex, 
+          colIndex, 
+          false, 
+          false, // Don't lock the cell
+          result.reason || "Invalid player",
+          null
+        );
+        
+        // Show feedback for invalid entries
+        toast({
+          title: "Invalid player",
+          description: result.reason || "This player doesn't match the criteria. Try another name.",
+          variant: "destructive"
+        });
+      }
+    } catch (err) {
+      console.error("Error validating suggested player:", err);
+      setCellValidation(rowIndex, colIndex, false, false, "Error validating player");
+    }
   };
 
   const handleCellBlur = async (rowIndex: number, colIndex: number) => {
@@ -268,6 +326,9 @@ const GridPage = () => {
         isSubmitting={isSubmitting}
         isGridComplete={isGridComplete}
         areAllFilledCellsValid={areAllFilledCellsValid}
+        onSuggestionSelect={(rowIndex, colIndex, suggestion) => 
+          handleSuggestionSelect(rowIndex, colIndex, suggestion)
+        }
       />
     </div>
   );

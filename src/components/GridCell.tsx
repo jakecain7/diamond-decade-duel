@@ -4,6 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Check, X, Loader2 } from "lucide-react";
 import { GridCell as GridCellType } from "@/lib/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import PlayerSuggestions from "./grid/PlayerSuggestions";
+import { supabase } from "@/integrations/supabase/client";
+
+interface PlayerSuggestion {
+  id: string;
+  name: string;
+  similarity: number;
+}
 
 interface GridCellProps {
   cell: GridCellType;
@@ -11,11 +19,21 @@ interface GridCellProps {
   colIndex: number;
   onValueChange: (value: string) => void;
   onBlur: () => void;
+  onSuggestionSelect?: (suggestion: PlayerSuggestion) => void;
 }
 
-const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellProps) => {
+const GridCell = ({ 
+  cell, 
+  rowIndex, 
+  colIndex, 
+  onValueChange, 
+  onBlur,
+  onSuggestionSelect 
+}: GridCellProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [suggestions, setSuggestions] = useState<PlayerSuggestion[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
   // Handle animation for invalid entries
   useEffect(() => {
@@ -28,6 +46,59 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
       return () => clearTimeout(timer);
     }
   }, [cell.isValid, cell.isValidating]);
+
+  // Fetch suggestions if player not found
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (cell.isValid === false && 
+          cell.errorReason?.includes("Player not found") && 
+          cell.value && 
+          !cell.isValidating) {
+        
+        setLoadingSuggestions(true);
+        try {
+          const { data, error } = await supabase.functions.invoke('suggest-player-correction', {
+            body: { typedName: cell.value }
+          });
+          
+          if (error) {
+            console.error('Error fetching suggestions:', error);
+            setSuggestions([]);
+          } else if (data?.suggestions) {
+            setSuggestions(data.suggestions);
+          }
+        } catch (err) {
+          console.error('Failed to fetch suggestions:', err);
+          setSuggestions([]);
+        } finally {
+          setLoadingSuggestions(false);
+        }
+      } else {
+        // Clear suggestions when cell state changes
+        setSuggestions([]);
+      }
+    };
+
+    fetchSuggestions();
+  }, [cell.isValid, cell.errorReason, cell.value, cell.isValidating]);
+
+  const handleSuggestionSelect = (suggestion: PlayerSuggestion) => {
+    onValueChange(suggestion.name);
+    setSuggestions([]);
+    
+    if (onSuggestionSelect) {
+      onSuggestionSelect(suggestion);
+    }
+    
+    // Automatically validate after selecting a suggestion
+    setTimeout(() => {
+      onBlur();
+    }, 100);
+  };
+
+  const dismissSuggestions = () => {
+    setSuggestions([]);
+  };
 
   return (
     <div className={`
@@ -78,6 +149,16 @@ const GridCell = ({ cell, rowIndex, colIndex, onValueChange, onBlur }: GridCellP
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+      )}
+
+      {/* Player suggestions component */}
+      {(suggestions.length > 0 || loadingSuggestions) && (
+        <PlayerSuggestions 
+          suggestions={suggestions}
+          onSelectSuggestion={handleSuggestionSelect}
+          onDismiss={dismissSuggestions}
+          loading={loadingSuggestions}
+        />
       )}
     </div>
   );

@@ -3,14 +3,27 @@ import React from "react";
 import { PuzzleDefinition } from "@/lib/types";
 import GridCell from "@/components/GridCell";
 
+interface PlayerSuggestion {
+  id: string;
+  name: string;
+  similarity: number;
+}
+
 interface GridProps {
   puzzle: PuzzleDefinition;
   gridState: any[][];
   handleCellUpdate: (rowIndex: number, colIndex: number, value: string) => void;
   handleCellBlur: (rowIndex: number, colIndex: number) => void;
+  onSuggestionSelect?: (rowIndex: number, colIndex: number, suggestion: PlayerSuggestion) => void;
 }
 
-const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps) => {
+const Grid = ({ 
+  puzzle, 
+  gridState, 
+  handleCellUpdate, 
+  handleCellBlur,
+  onSuggestionSelect
+}: GridProps) => {
   return (
     <div className="relative">
       {/* Grid header with decade labels */}
@@ -41,6 +54,10 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             colIndex={colIndex}
             onValueChange={(value) => handleCellUpdate(0, colIndex, value)}
             onBlur={() => handleCellBlur(0, colIndex)}
+            onSuggestionSelect={onSuggestionSelect ? 
+              (suggestion) => onSuggestionSelect(0, colIndex, suggestion) : 
+              undefined
+            }
           />
         ))}
 
@@ -56,6 +73,10 @@ const Grid = ({ puzzle, gridState, handleCellUpdate, handleCellBlur }: GridProps
             colIndex={colIndex}
             onValueChange={(value) => handleCellUpdate(1, colIndex, value)}
             onBlur={() => handleCellBlur(1, colIndex)}
+            onSuggestionSelect={onSuggestionSelect ? 
+              (suggestion) => onSuggestionSelect(1, colIndex, suggestion) : 
+              undefined
+            }
           />
         ))}
       </div>

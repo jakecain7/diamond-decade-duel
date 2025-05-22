@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame } from "lucide-react";
@@ -5,6 +6,12 @@ import Grid from "./Grid";
 import { PuzzleDefinition } from "@/lib/types";
 import SubmitButton from "./SubmitButton";
 import Button from "./Button";
+
+interface PlayerSuggestion {
+  id: string;
+  name: string;
+  similarity: number;
+}
 
 interface GridContainerProps {
   puzzle: PuzzleDefinition;
@@ -15,6 +22,7 @@ interface GridContainerProps {
   isSubmitting: boolean;
   isGridComplete: () => boolean;
   areAllFilledCellsValid: () => boolean;
+  onSuggestionSelect?: (rowIndex: number, colIndex: number, suggestion: PlayerSuggestion) => void;
 }
 
 const GridContainer = ({ 
@@ -25,7 +33,8 @@ const GridContainer = ({
   handleSubmit,
   isSubmitting,
   isGridComplete,
-  areAllFilledCellsValid
+  areAllFilledCellsValid,
+  onSuggestionSelect
 }: GridContainerProps) => {
   // Mock values for timer and rarity - in a real app these would be calculated
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -61,7 +70,8 @@ const GridContainer = ({
                 puzzle={puzzle} 
                 gridState={gridState} 
                 handleCellUpdate={handleCellUpdate} 
-                handleCellBlur={handleCellBlur} 
+                handleCellBlur={handleCellBlur}
+                onSuggestionSelect={onSuggestionSelect}
               />
             </CardContent>
           </Card>

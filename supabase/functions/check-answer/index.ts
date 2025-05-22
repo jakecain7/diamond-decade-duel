@@ -18,6 +18,7 @@ interface CheckAnswerRequest {
   rowCategoryType: string; // e.g., "team", "league", "award"
   rowCategoryValue: string; // e.g., team ID like "NYA" for Yankees
   columnDecade: number; // e.g., 1970, 1980, 1990
+  playerId?: string; // Optional player ID if coming from suggestion
 }
 
 serve(async (req: Request) => {
@@ -32,9 +33,12 @@ serve(async (req: Request) => {
     
     // Parse request body
     const requestBody: CheckAnswerRequest = await req.json();
-    const { playerName, rowCategoryType, rowCategoryValue, columnDecade } = requestBody;
+    const { playerName, rowCategoryType, rowCategoryValue, columnDecade, playerId } = requestBody;
     
     console.log(`Checking answer: ${playerName} for ${rowCategoryType}=${rowCategoryValue} in ${columnDecade}s`);
+    if (playerId) {
+      console.log(`Using provided player ID: ${playerId}`);
+    }
     
     // Validate required fields
     if (!playerName || !rowCategoryType || !rowCategoryValue || !columnDecade) {
@@ -50,43 +54,57 @@ serve(async (req: Request) => {
       );
     }
     
-    // Normalize player name for search
-    // Split the input name to handle different formats (First Last, Last First, etc.)
-    const nameParts = playerName.trim().split(/\s+/);
-    
-    // We'll search for the player using different combinations of the name parts
     let player = null;
     
-    if (nameParts.length === 1) {
-      // If only one name part, search in both first and last name
+    // If player ID is provided, use it directly
+    if (playerId) {
       const { data } = await supabase
         .from('players')
         .select('*')
-        .or(`name_last.ilike.${nameParts[0]}%,name_first.ilike.${nameParts[0]}%`)
-        .limit(1);
+        .eq('id', playerId)
+        .single();
+        
+      player = data;
+    }
+    
+    // If no player found by ID or no ID provided, search by name
+    if (!player) {
+      // Normalize player name for search
+      // Split the input name to handle different formats (First Last, Last First, etc.)
+      const nameParts = playerName.trim().split(/\s+/);
       
-      player = data && data.length > 0 ? data[0] : null;
-    } else if (nameParts.length >= 2) {
-      // Try firstName lastName format
-      let { data } = await supabase
-        .from('players')
-        .select('*')
-        .ilike('name_first', `${nameParts[0]}%`)
-        .ilike('name_last', `${nameParts[nameParts.length - 1]}%`)
-        .limit(1);
-      
-      if (data && data.length > 0) {
-        player = data[0];
-      } else {
-        // Try lastName firstName format
+      // We'll search for the player using different combinations of the name parts
+      if (nameParts.length === 1) {
+        // If only one name part, search in both first and last name
         const { data } = await supabase
           .from('players')
           .select('*')
-          .ilike('name_first', `${nameParts[nameParts.length - 1]}%`)
-          .ilike('name_last', `${nameParts[0]}%`)
+          .or(`name_last.ilike.${nameParts[0]}%,name_first.ilike.${nameParts[0]}%`)
           .limit(1);
         
         player = data && data.length > 0 ? data[0] : null;
+      } else if (nameParts.length >= 2) {
+        // Try firstName lastName format
+        let { data } = await supabase
+          .from('players')
+          .select('*')
+          .ilike('name_first', `${nameParts[0]}%`)
+          .ilike('name_last', `${nameParts[nameParts.length - 1]}%`)
+          .limit(1);
+        
+        if (data && data.length > 0) {
+          player = data[0];
+        } else {
+          // Try lastName firstName format
+          const { data } = await supabase
+            .from('players')
+            .select('*')
+            .ilike('name_first', `${nameParts[nameParts.length - 1]}%`)
+            .ilike('name_last', `${nameParts[0]}%`)
+            .limit(1);
+          
+          player = data && data.length > 0 ? data[0] : null;
+        }
       }
     }
     
