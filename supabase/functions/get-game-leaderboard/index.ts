@@ -52,16 +52,13 @@ serve(async (req) => {
     const gameId = gameData.id;
     console.log(`Found game ID: ${gameId}`);
 
-    // Query the top scores for this game
+    // Query the top scores for this game with an explicit query
+    // instead of relying on PostgREST's relationship detection
     const { data: leaderboardData, error: leaderboardError } = await supabaseClient
-      .from("user_game_scores")
-      .select(`
-        high_score,
-        profiles!inner(display_name)
-      `)
-      .eq("game_id", gameId)
-      .order("high_score", { ascending: false })
-      .limit(limit);
+      .rpc('get_game_leaderboard', { 
+        p_game_id: gameId,
+        p_limit: limit
+      });
 
     if (leaderboardError) {
       console.error("Leaderboard query error:", leaderboardError);
@@ -74,7 +71,7 @@ serve(async (req) => {
     // Format the response with rank, player name and score
     const formattedLeaderboard = leaderboardData.map((entry, index) => ({
       rank: index + 1,
-      playerName: entry.profiles.display_name || "Anonymous Player",
+      playerName: entry.player_name || "Anonymous Player",
       score: entry.high_score,
     }));
 
