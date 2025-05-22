@@ -10,26 +10,39 @@ schemas = ["public", "storage", "graphql_public"]
 port = 54322
 
 [studio]
-enabled = true
 port = 54323
-api_url = "http://localhost"
 
 [inbucket]
-enabled = true
 port = 54324
-
-[storage]
-enabled = true
-port = 54325
 
 [auth]
 enabled = true
-port = 54326
+port = 9999
 
-[realtime]
+[storage]
 enabled = true
-port = 54327
+port = 5000
 
-[functions]
+[functions.validate-display-name]
+verify_jwt = false
+
+[functions.add-user-to-beehiiv]
+verify_jwt = false
+
+[functions.check-answer]
+verify_jwt = false
+
 [functions.get-game-leaderboard]
+verify_jwt = false
+
+[functions.get-random-hl-player]
+verify_jwt = false
+
+[functions.get-user-game-score]
+verify_jwt = false
+
+[functions.submit-hl-score]
+verify_jwt = false
+
+[functions.suggest-player-correction]
 verify_jwt = false

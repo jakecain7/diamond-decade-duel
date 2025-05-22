@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SetDisplayName = () => {
   const [displayName, setDisplayName] = useState("");
@@ -16,6 +17,31 @@ const SetDisplayName = () => {
   const { refreshProfile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const validateDisplayName = async (name: string) => {
+    try {
+      const response = await supabase.functions.invoke("validate-display-name", {
+        body: { displayName: name }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || "Error validating display name");
+      }
+
+      const data = response.data;
+      if (!data.valid) {
+        return { valid: false, error: data.error || "Invalid display name" };
+      }
+
+      return { valid: true };
+    } catch (error: any) {
+      console.error("Error validating display name:", error);
+      return { 
+        valid: false, 
+        error: error.message || "Error validating display name" 
+      };
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,18 +52,17 @@ const SetDisplayName = () => {
       return;
     }
 
-    if (displayName.length < 3) {
-      setError("Display name must be at least 3 characters");
-      return;
-    }
-
-    if (displayName.length > 20) {
-      setError("Display name must be less than 20 characters");
-      return;
-    }
-
     setIsSubmitting(true);
     try {
+      // First validate the display name
+      const validation = await validateDisplayName(displayName.trim());
+      
+      if (!validation.valid) {
+        setError(validation.error);
+        setIsSubmitting(false);
+        return;
+      }
+      
       // Get the current user data
       const { data: userData } = await supabase.auth.getUser();
       const userId = userData.user?.id;
@@ -100,7 +125,11 @@ const SetDisplayName = () => {
                 disabled={isSubmitting}
                 className="w-full"
               />
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {error && (
+                <Alert variant="destructive" className="py-2">
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
+                </Alert>
+              )}
             </div>
           </CardContent>
           <CardFooter>
