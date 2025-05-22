@@ -30,11 +30,20 @@ serve(async (req: Request) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     
     // Parse the request body to get the email
-    const { email } = await req.json();
+    const requestBody = await req.json();
+    const email = requestBody.email;
+    
     console.log(`Received request to add user with email: ${email}`);
     
     if (!email) {
-      throw new Error("Email is missing from the request body");
+      console.error("Email is missing from the request body");
+      return new Response(
+        JSON.stringify({ success: false, error: "Email is missing from the request body" }),
+        {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          status: 400,
+        }
+      );
     }
 
     console.log(`Adding user with email: ${email} to Beehiiv`);
