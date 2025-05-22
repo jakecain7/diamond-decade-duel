@@ -5,12 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDebounce } from "@/hooks/useDebounce";
-
-interface PlayerSuggestion {
-  id: string;
-  name: string;
-  years?: string;
-}
+import { PlayerSuggestion } from "@/lib/types";
 
 interface AutocompleteInputProps {
   value: string;
@@ -145,7 +140,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
                   className="flex justify-between"
                 >
                   <div className="text-left">{player.name}</div>
-                  {player.years && <div className="text-xs opacity-70">{player.years}</div>}
+                  {/* Removed years from display */}
                 </CommandItem>
               ))}
             </CommandGroup>
