@@ -33,7 +33,7 @@ const HigherLowerHRGame: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-navy p-6">
         <div className="w-full max-w-[460px] bg-cream rounded-3xl p-6 shadow-lg">
-          <h1 className="text-3xl font-heading text-center text-navy">HIGHER-OR-LOWER: CAREER HR</h1>
+          <h1 className="text-3xl font-heading text-center text-navy">DINGER DUEL</h1>
           <div className="flex justify-center items-center min-h-[400px]">
             <LoadingDisplay message="Loading players..." />
           </div>
@@ -73,19 +73,12 @@ const HigherLowerHRGame: React.FC = () => {
       <div className="w-full max-w-[460px] bg-cream rounded-3xl p-6 shadow-lg">
         {/* Score and Streak Bar */}
         <div className="flex justify-between items-center bg-navy text-cream p-4 rounded-lg mb-6 h-16">
-          <div>
-            <div className="text-xs font-medium uppercase">Score</div>
-            <div className="text-2xl font-bold">{score}</div>
+          <div className="text-center">
+            <div className="text-xs font-medium uppercase">High Score</div>
+            <div className="text-2xl font-bold">{personalBestScore || 0}</div>
           </div>
           
-          {personalBestScore !== null && (
-            <div className="text-center">
-              <div className="text-xs font-medium uppercase">Best</div>
-              <div className="text-2xl font-bold">{personalBestScore}</div>
-            </div>
-          )}
-          
-          <div className="text-right">
+          <div className="text-center">
             <div className="text-xs font-medium uppercase">Streak</div>
             <div className="text-2xl font-bold">{streak}x</div>
           </div>
@@ -93,7 +86,7 @@ const HigherLowerHRGame: React.FC = () => {
         
         {/* Title */}
         <h1 className="font-heading text-2xl text-center text-navy tracking-wide mb-6">
-          HIGHER-OR-LOWER: CAREER HR
+          DINGER DUEL
         </h1>
         
         {renderLoginPrompt()}
@@ -188,7 +181,7 @@ const HigherLowerHRGame: React.FC = () => {
                 <Button
                   onClick={() => {
                     // Copy to clipboard and show toast
-                    navigator.clipboard.writeText(`I scored ${score} on Higher-or-Lower HR! Can you beat my streak of ${streak}?`);
+                    navigator.clipboard.writeText(`I scored ${score} on Dinger Duel! Can you beat my streak of ${streak}?`);
                     toast.success("Copied to clipboard!");
                   }}
                   variant="outline"
