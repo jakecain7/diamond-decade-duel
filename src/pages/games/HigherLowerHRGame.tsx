@@ -3,9 +3,12 @@ import React from 'react';
 import { useHigherLowerGame } from '@/hooks/useHigherLowerGame';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Trophy } from 'lucide-react';
 import LoadingDisplay from '@/components/grid/LoadingDisplay';
 import { Separator } from '@/components/ui/separator';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const HigherLowerHRGame: React.FC = () => {
   const {
@@ -13,14 +16,19 @@ const HigherLowerHRGame: React.FC = () => {
     nextPlayer,
     score,
     streak,
+    personalBestScore,
+    isPersonalBest,
     gamePhase,
     isLoading,
     feedbackMessage,
     countdown,
     countdownType,
     handleGuess,
-    restartGame
+    restartGame,
+    isAuthenticated
   } = useHigherLowerGame();
+  
+  const { user, loading: authLoading } = useAuth();
 
   if (isLoading && gamePhase === 'loadingFirstPlayer') {
     return (
@@ -52,14 +60,47 @@ const HigherLowerHRGame: React.FC = () => {
   // Determine if the guess buttons should be disabled
   const shouldDisableGuessButtons = isLoading || gamePhase === 'showingResult';
 
+  // Login prompt for unauthenticated users
+  const renderLoginPrompt = () => {
+    if (authLoading) return null;
+    
+    if (!user) {
+      return (
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-md">
+          <div className="flex items-start">
+            <Trophy className="text-amber-500 mr-2 mt-1" size={18} />
+            <div>
+              <p className="text-amber-800 font-medium">Sign in to save your high scores!</p>
+              <p className="text-amber-700 text-sm mt-1">
+                <Link to="/dashboard" className="underline hover:text-amber-900">Sign in</Link> to track your personal best and compete on the leaderboard.
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <h1 className="text-3xl font-bold text-center mb-8 text-navy">Higher or Lower: Career HR</h1>
+      
+      {renderLoginPrompt()}
       
       {/* Score and Streak Display */}
       <div className="flex justify-between mb-6">
         <div className="text-lg font-semibold">Score: {score}</div>
         <div className="text-lg font-semibold">Streak: {streak}</div>
+        {isAuthenticated && personalBestScore !== null && (
+          <div className="text-lg font-semibold flex items-center">
+            <Trophy className="mr-1 text-amber-500" size={18} /> 
+            <span className={isPersonalBest ? "text-amber-500 font-bold" : ""}>
+              Best: {personalBestScore}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Current Player Card */}
@@ -99,7 +140,7 @@ const HigherLowerHRGame: React.FC = () => {
                 : '?'}
             </div>
             
-            {/* Show nextPlayer details regardless of game phase */}
+            {/* Always show the nextPlayer's career and team details */}
             <div className="mt-4 text-sm">
               <div className="mb-1">
                 <span className="font-semibold">Career: </span>
@@ -114,7 +155,7 @@ const HigherLowerHRGame: React.FC = () => {
         </Card>
       )}
 
-      {/* Feedback Message */}
+      {/* Feedback Message with Countdown */}
       {feedbackMessage && (
         <div className={`text-center text-lg mb-6 font-semibold ${gamePhase === 'gameOver' ? 'text-red-600' : 'text-green-600'}`}>
           {feedbackMessage}
@@ -163,7 +204,13 @@ const HigherLowerHRGame: React.FC = () => {
         )}
         
         {gamePhase === 'gameOver' && (
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-4">
+            {isPersonalBest && (
+              <div className="text-amber-500 font-bold flex items-center gap-2 mb-2">
+                <Trophy size={24} />
+                <span>New Personal Best!</span>
+              </div>
+            )}
             <Button
               size="lg"
               onClick={restartGame}

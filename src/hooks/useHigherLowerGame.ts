@@ -2,6 +2,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Player {
   playerId: string;
@@ -25,11 +26,16 @@ export function useHigherLowerGame() {
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
   const [highScore, setHighScore] = useState<number>(0);
+  const [personalBestScore, setPersonalBestScore] = useState<number | null>(null);
+  const [isPersonalBest, setIsPersonalBest] = useState<boolean>(false);
   const [gamePhase, setGamePhase] = useState<GamePhase>('loadingFirstPlayer');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
   const [countdown, setCountdown] = useState<number>(3);
   const [countdownType, setCountdownType] = useState<'next' | 'reset'>('next');
+  
+  const { user } = useAuth();
+  const gameSlug = 'higher-lower-hr';
 
   // Function to fetch a random player
   const fetchRandomPlayer = useCallback(async (excludePlayerId?: string): Promise<Player | null> => {
@@ -59,6 +65,52 @@ export function useHigherLowerGame() {
     }
   }, []);
 
+  // Function to fetch user's personal best score
+  const fetchPersonalBestScore = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('get-user-game-score', {
+        body: { gameSlug }
+      });
+
+      if (error) {
+        console.error('Error fetching personal best score:', error);
+        return;
+      }
+
+      if (data && typeof data.highScore === 'number') {
+        setPersonalBestScore(data.highScore);
+      }
+    } catch (error) {
+      console.error('Exception fetching personal best score:', error);
+    }
+  }, [user, gameSlug]);
+
+  // Function to submit the user's score
+  const submitScore = useCallback(async (finalScore: number) => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-hl-score', {
+        body: { gameSlug, score: finalScore }
+      });
+
+      if (error) {
+        console.error('Error submitting score:', error);
+        return;
+      }
+
+      if (data?.isNewHighScore) {
+        setIsPersonalBest(true);
+        setPersonalBestScore(data.highScore);
+        toast.success(`New personal best: ${data.highScore}!`);
+      }
+    } catch (error) {
+      console.error('Exception submitting score:', error);
+    }
+  }, [user, gameSlug]);
+
   // Initialize the game
   const initializeGame = useCallback(async () => {
     setGamePhase('loadingFirstPlayer');
@@ -66,6 +118,7 @@ export function useHigherLowerGame() {
     setScore(0);
     setStreak(0);
     setFeedbackMessage('');
+    setIsPersonalBest(false);
 
     try {
       // Fetch first player
@@ -107,7 +160,8 @@ export function useHigherLowerGame() {
 
     if (isCorrect) {
       // Correct guess
-      setScore(prevScore => prevScore + 1);
+      const newScore = score + 1;
+      setScore(newScore);
       setStreak(prevStreak => prevStreak + 1);
       setFeedbackMessage(`Correct! ${nextPlayer.playerName} had ${nextPlayer.careerHR} HRs.`);
       setCountdownType('next');
@@ -155,6 +209,9 @@ export function useHigherLowerGame() {
         toast.success(`New high score: ${score}!`);
       }
       
+      // Submit the score to the backend
+      submitScore(score);
+      
       setIsLoading(false); // Allow UI to update
       setCountdown(3); // Initialize countdown to 3 seconds
       
@@ -175,12 +232,13 @@ export function useHigherLowerGame() {
         }
       }, interval);
     }
-  }, [currentPlayer, nextPlayer, gamePhase, score, highScore, fetchRandomPlayer]);
+  }, [currentPlayer, nextPlayer, gamePhase, score, highScore, fetchRandomPlayer, submitScore]);
 
-  // Initial game setup
+  // Initial setup: fetch personal best and initialize game
   useEffect(() => {
+    fetchPersonalBestScore();
     initializeGame();
-  }, [initializeGame]);
+  }, [initializeGame, fetchPersonalBestScore]);
 
   // Function to restart the game
   const restartGame = useCallback(() => {
@@ -193,12 +251,15 @@ export function useHigherLowerGame() {
     score,
     streak,
     highScore,
+    personalBestScore,
+    isPersonalBest,
     gamePhase,
     isLoading,
     feedbackMessage,
     countdown,
     countdownType,
     handleGuess,
-    restartGame
+    restartGame,
+    isAuthenticated: !!user
   };
 }

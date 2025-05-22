@@ -222,6 +222,44 @@ export type Database = {
         }
         Relationships: []
       }
+      user_game_scores: {
+        Row: {
+          created_at: string
+          game_id: string
+          high_score: number
+          id: string
+          last_played_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          high_score?: number
+          id?: string
+          last_played_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          high_score?: number
+          id?: string
+          last_played_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_game_scores_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
