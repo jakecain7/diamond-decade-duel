@@ -47,6 +47,9 @@ const HigherLowerHRGame: React.FC = () => {
     return teams.join(', ');
   };
 
+  // Determine if the guess buttons should be disabled
+  const shouldDisableGuessButtons = isLoading || gamePhase === 'showingResult';
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <h1 className="text-3xl font-bold text-center mb-8 text-navy">Higher or Lower: Career HR</h1>
@@ -113,6 +116,11 @@ const HigherLowerHRGame: React.FC = () => {
       {feedbackMessage && (
         <div className={`text-center text-lg mb-6 font-semibold ${gamePhase === 'gameOver' ? 'text-red-600' : 'text-green-600'}`}>
           {feedbackMessage}
+          {gamePhase === 'showingResult' && (
+            <div className="text-gray-500 text-sm mt-2">
+              {isLoading ? "Loading next player..." : "Continuing in a moment..."}
+            </div>
+          )}
         </div>
       )}
 
@@ -132,7 +140,7 @@ const HigherLowerHRGame: React.FC = () => {
               size="lg" 
               onClick={() => handleGuess(true)}
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg"
-              disabled={isLoading}
+              disabled={shouldDisableGuessButtons}
             >
               <ArrowUp className="mr-2" /> Higher
             </Button>
@@ -140,7 +148,7 @@ const HigherLowerHRGame: React.FC = () => {
               size="lg" 
               onClick={() => handleGuess(false)}
               className="bg-brick hover:bg-brick/90 text-white px-8 py-4 text-lg"
-              disabled={isLoading}
+              disabled={shouldDisableGuessButtons}
             >
               <ArrowDown className="mr-2" /> Lower
             </Button>

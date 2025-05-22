@@ -109,18 +109,24 @@ export function useHigherLowerGame() {
       setStreak(prevStreak => prevStreak + 1);
       setFeedbackMessage(`Correct! ${nextPlayer.playerName} had ${nextPlayer.careerHR} HRs.`);
       
-      // Move to next round
-      setCurrentPlayer(nextPlayer);
+      // Add a pause before moving to the next player
+      setIsLoading(false); // Allow UI to update during the pause
       
-      // Fetch new next player
+      // Fetch new next player during the pause
       const newNextPlayer = await fetchRandomPlayer(nextPlayer.playerId);
-      if (!newNextPlayer) {
-        toast.error('Failed to load next player');
-        setGamePhase('gameOver');
-      } else {
+      
+      // After a pause, move to the next round
+      setTimeout(() => {
+        if (!newNextPlayer) {
+          toast.error('Failed to load next player');
+          setGamePhase('gameOver');
+          return;
+        }
+        
+        setCurrentPlayer(nextPlayer);
         setNextPlayer(newNextPlayer);
         setGamePhase('waitingForGuess');
-      }
+      }, 3500); // 3.5 second pause
     } else {
       // Wrong guess
       setFeedbackMessage(`Wrong! ${nextPlayer.playerName} had ${nextPlayer.careerHR} HRs. Game Over.`);
@@ -131,11 +137,14 @@ export function useHigherLowerGame() {
         toast.success(`New high score: ${score}!`);
       }
       
-      setGamePhase('gameOver');
-      setStreak(0);
+      setIsLoading(false); // Allow UI to update
+      
+      // After a pause, move to game over
+      setTimeout(() => {
+        setGamePhase('gameOver');
+        setStreak(0);
+      }, 3500); // 3.5 second pause
     }
-    
-    setIsLoading(false);
   }, [currentPlayer, nextPlayer, gamePhase, score, highScore, fetchRandomPlayer]);
 
   // Initial game setup
