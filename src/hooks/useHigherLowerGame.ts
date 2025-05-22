@@ -28,6 +28,8 @@ export function useHigherLowerGame() {
   const [gamePhase, setGamePhase] = useState<GamePhase>('loadingFirstPlayer');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
+  const [countdown, setCountdown] = useState<number>(3);
+  const [countdownType, setCountdownType] = useState<'next' | 'reset'>('next');
 
   // Function to fetch a random player
   const fetchRandomPlayer = useCallback(async (excludePlayerId?: string): Promise<Player | null> => {
@@ -108,28 +110,44 @@ export function useHigherLowerGame() {
       setScore(prevScore => prevScore + 1);
       setStreak(prevStreak => prevStreak + 1);
       setFeedbackMessage(`Correct! ${nextPlayer.playerName} had ${nextPlayer.careerHR} HRs.`);
+      setCountdownType('next');
       
       // Add a pause before moving to the next player
       setIsLoading(false); // Allow UI to update during the pause
+      setCountdown(3); // Initialize countdown to 3 seconds
       
       // Fetch new next player during the pause
       const newNextPlayer = await fetchRandomPlayer(nextPlayer.playerId);
       
-      // After a pause, move to the next round
-      setTimeout(() => {
-        if (!newNextPlayer) {
-          toast.error('Failed to load next player');
-          setGamePhase('gameOver');
-          return;
-        }
+      // Set up countdown
+      const countdownDuration = 3500; // 3.5 seconds
+      const interval = 1000; // 1 second between countdown updates
+      const startTime = Date.now();
+      
+      const countdownTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(3 - Math.floor(elapsed / 1000), 0);
+        setCountdown(remaining);
         
-        setCurrentPlayer(nextPlayer);
-        setNextPlayer(newNextPlayer);
-        setGamePhase('waitingForGuess');
-      }, 3500); // 3.5 second pause
+        if (elapsed >= countdownDuration - 100) {
+          clearInterval(countdownTimer);
+          
+          if (!newNextPlayer) {
+            toast.error('Failed to load next player');
+            setGamePhase('gameOver');
+            return;
+          }
+        
+          setCurrentPlayer(nextPlayer);
+          setNextPlayer(newNextPlayer);
+          setGamePhase('waitingForGuess');
+        }
+      }, interval);
+      
     } else {
       // Wrong guess
       setFeedbackMessage(`Wrong! ${nextPlayer.playerName} had ${nextPlayer.careerHR} HRs. Game Over.`);
+      setCountdownType('reset');
       
       // Update high score if needed
       if (score > highScore) {
@@ -138,12 +156,24 @@ export function useHigherLowerGame() {
       }
       
       setIsLoading(false); // Allow UI to update
+      setCountdown(3); // Initialize countdown to 3 seconds
       
-      // After a pause, move to game over
-      setTimeout(() => {
-        setGamePhase('gameOver');
-        setStreak(0);
-      }, 3500); // 3.5 second pause
+      // Set up countdown
+      const countdownDuration = 3500; // 3.5 seconds
+      const interval = 1000; // 1 second between countdown updates
+      const startTime = Date.now();
+      
+      const countdownTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(3 - Math.floor(elapsed / 1000), 0);
+        setCountdown(remaining);
+        
+        if (elapsed >= countdownDuration - 100) {
+          clearInterval(countdownTimer);
+          setGamePhase('gameOver');
+          setStreak(0);
+        }
+      }, interval);
     }
   }, [currentPlayer, nextPlayer, gamePhase, score, highScore, fetchRandomPlayer]);
 
@@ -166,6 +196,8 @@ export function useHigherLowerGame() {
     gamePhase,
     isLoading,
     feedbackMessage,
+    countdown,
+    countdownType,
     handleGuess,
     restartGame
   };

@@ -16,6 +16,8 @@ const HigherLowerHRGame: React.FC = () => {
     gamePhase,
     isLoading,
     feedbackMessage,
+    countdown,
+    countdownType,
     handleGuess,
     restartGame
   } = useHigherLowerGame();
@@ -96,18 +98,18 @@ const HigherLowerHRGame: React.FC = () => {
                 ? `${nextPlayer.careerHR} HRs` 
                 : '?'}
             </div>
-            {(gamePhase === 'showingResult' || gamePhase === 'gameOver') && (
-              <div className="mt-4 text-sm">
-                <div className="mb-1">
-                  <span className="font-semibold">Career: </span>
-                  {formatCareerSpan(nextPlayer?.debutYear, nextPlayer?.finalYear)}
-                </div>
-                <div>
-                  <span className="font-semibold">Teams: </span>
-                  {formatTeams(nextPlayer?.teamsPlayedFor)}
-                </div>
+            
+            {/* Show nextPlayer details regardless of game phase */}
+            <div className="mt-4 text-sm">
+              <div className="mb-1">
+                <span className="font-semibold">Career: </span>
+                {formatCareerSpan(nextPlayer?.debutYear, nextPlayer?.finalYear)}
               </div>
-            )}
+              <div>
+                <span className="font-semibold">Teams: </span>
+                {formatTeams(nextPlayer?.teamsPlayedFor)}
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -118,7 +120,12 @@ const HigherLowerHRGame: React.FC = () => {
           {feedbackMessage}
           {gamePhase === 'showingResult' && (
             <div className="text-gray-500 text-sm mt-2">
-              {isLoading ? "Loading next player..." : "Continuing in a moment..."}
+              {isLoading 
+                ? "Loading next player..." 
+                : countdownType === 'next' 
+                  ? `Next question in: ${countdown}` 
+                  : `Resetting in: ${countdown}`
+              }
             </div>
           )}
         </div>
