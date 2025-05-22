@@ -287,9 +287,7 @@ export type Database = {
     }
     Functions: {
       get_game_leaderboard: {
-        Args:
-          | { p_game_id: string; p_limit?: number }
-          | { p_game_id: string; p_limit?: number; p_timespan?: string }
+        Args: { p_game_id: string; p_limit?: number; p_timespan?: string }
         Returns: {
           high_score: number
           player_name: string
