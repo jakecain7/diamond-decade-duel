@@ -18,6 +18,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				serif: ['Playfair Display', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,7 +64,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Baseball theme colors
+				'baseball-cream': '#f5f0e1',
+				'baseball-green': '#1d3557',
+				'baseball-red': '#e76f51',
+				'baseball-tan': '#e9c46a',
+				'baseball-white': '#f8edeb',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
