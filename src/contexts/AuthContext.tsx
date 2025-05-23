@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -95,10 +94,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const userEmail = currentSession?.user?.email;
           const userId = currentSession?.user?.id;
           
-          toast({
-            title: "Welcome back!",
-            description: "You've successfully signed in.",
-          });
+          // Removed toast notification for SIGNED_IN event
           
           // Only add to Beehiiv if this is a different email than the last one
           // This prevents duplicate calls when refreshing the page
