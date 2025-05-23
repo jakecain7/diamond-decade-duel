@@ -4,11 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signInWithEmail } = useAuth();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +19,11 @@ const AuthForm = () => {
     setIsSubmitting(true);
     try {
       await signInWithEmail(email);
+      toast({
+        title: "Check your email",
+        description: "We've sent you a magic link to sign in.",
+        className: "bg-white text-[#1d3557] border border-[#e0d8c4]",
+      });
     } finally {
       setIsSubmitting(false);
     }
