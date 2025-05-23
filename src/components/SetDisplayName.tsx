@@ -111,7 +111,7 @@ const SetDisplayName = () => {
         <CardHeader>
           <CardTitle className="text-2xl text-center text-[#1d3557]">Welcome!</CardTitle>
           <CardDescription className="text-center text-[#1d3557]/70">
-            Please set your display name to continue
+            Choose a public display name to show your high scores on our leaderboards
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>

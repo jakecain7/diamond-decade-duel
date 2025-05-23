@@ -18,7 +18,7 @@ type Game = {
 };
 
 const Dashboard = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, profile } = useAuth();
   
   const { data: games, isLoading: gamesLoading } = useQuery({
     queryKey: ["games"],
@@ -43,7 +43,7 @@ const Dashboard = () => {
       <div className="min-h-[calc(100vh-68px)] bg-[#f5f0e1] p-6">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-3xl font-bold text-[#1d3557] mb-4">
-            Welcome{user ? `, ${user.email?.split('@')[0]}` : ""}!
+            Welcome{profile?.display_name ? `, ${profile.display_name}` : ""}!
           </h1>
           <div className="bg-white p-10 rounded-lg shadow-sm border border-[#1d3557]/10">
             <Gamepad2 className="h-16 w-16 text-[#e76f51]/40 mx-auto mb-4" />
@@ -61,7 +61,7 @@ const Dashboard = () => {
       <div className="max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[#1d3557]">
-            Welcome{user ? `, ${user.email?.split('@')[0]}` : ""}!
+            Welcome{profile?.display_name ? `, ${profile.display_name}` : ""}!
           </h1>
           <p className="mt-2 text-[#1d3557]/80">
             Choose a game to play from the options below.
@@ -94,7 +94,7 @@ const Dashboard = () => {
                   <div className="w-full h-full bg-[#e76f51]/10 flex items-center justify-center">
                     {game.slug === "higher-lower-hr" && (
                       <img 
-                        src="/lovable-uploads/bb067289-2d61-4087-ae17-424e6b8f2108.png" 
+                        src="/lovable-uploads/0db4250d-fe29-4220-adf2-6f7a9f5f0044.png" 
                         alt="Dinger Duel"
                         className="w-full h-auto max-h-full object-contain" 
                       />
