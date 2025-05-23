@@ -17,7 +17,7 @@ const LandingPage = () => {
       <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-[#1d3557] mb-4">
-            Welcome to Grandstand Games
+            Welcome to Bleacher Arcade
           </h1>
           <p className="text-lg text-[#1d3557]/80 mb-2">
             Your all‑star arcade of bite‑size baseball challenges.

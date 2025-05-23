@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -84,8 +85,8 @@ const Header = () => {
       <div className="container mx-auto flex justify-between items-center px-4 py-1">
         <Link to={user ? "/dashboard" : "/"} className="flex items-center">
           <img 
-            src="/lovable-uploads/ef092560-f20b-49f7-8e3e-09d6ae434ba1.png" 
-            alt="Grandstand Games" 
+            src="/lovable-uploads/1e71e66f-136a-4bf5-b46a-48c04db44fc4.png" 
+            alt="Bleacher Arcade" 
             className="h-20 object-contain" 
           />
         </Link>
