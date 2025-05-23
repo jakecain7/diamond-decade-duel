@@ -24,15 +24,6 @@ const AuthForm = () => {
 
   return (
     <div className="max-w-md w-full mx-auto">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-[#1d3557]">
-          Welcome to Double-Play Grid!
-        </h2>
-        <p className="mt-2 text-[#1d3557]/80">
-          Please sign in with your email to play.
-        </p>
-      </div>
-      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Input
