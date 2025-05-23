@@ -17,6 +17,7 @@ import HigherLowerHRGame from "./pages/games/HigherLowerHRGame";
 import ComingSoon from "./pages/games/ComingSoon";
 import SetDisplayNamePage from "./pages/SetDisplayNamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
+import AdScriptManager from "./components/AdScriptManager";
 
 // Initialize Supabase auth to properly handle hash parameters
 // This ensures the client processes the URL fragment on initial load
@@ -48,6 +49,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Header />
+            <AdScriptManager />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
