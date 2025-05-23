@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,6 +18,7 @@ export function useHigherLowerGame() {
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
   const [countdown, setCountdown] = useState<number>(3);
   const [countdownType, setCountdownType] = useState<CountdownType>('next');
+  const [showFeedback, setShowFeedback] = useState<boolean>(false);
   
   const { user } = useAuth();
   const gameSlug = 'higher-lower-hr';
@@ -40,6 +40,7 @@ export function useHigherLowerGame() {
     setStreak(0);
     setFeedbackMessage('');
     setIsPersonalBest(false);
+    setShowFeedback(false);
 
     try {
       // Fetch first player
@@ -74,6 +75,7 @@ export function useHigherLowerGame() {
 
     setGamePhase('showingResult');
     setIsLoading(true);
+    setShowFeedback(true);
 
     const isCorrect = guessHigher 
       ? nextPlayer.careerHR >= currentPlayer.careerHR 
@@ -116,6 +118,7 @@ export function useHigherLowerGame() {
           setCurrentPlayer(nextPlayer);
           setNextPlayer(newNextPlayer);
           setGamePhase('waitingForGuess');
+          setShowFeedback(false);
         }
       }, interval);
       
@@ -156,6 +159,7 @@ export function useHigherLowerGame() {
           clearInterval(countdownTimer);
           setGamePhase('gameOver');
           setStreak(0);
+          // Keep showing feedback for game over
         }
       }, interval);
     }
@@ -187,6 +191,7 @@ export function useHigherLowerGame() {
     countdownType,
     handleGuess,
     restartGame,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    showFeedback
   };
 }

@@ -7,6 +7,7 @@ interface FeedbackMessageProps {
   isLoading: boolean;
   countdown: number;
   countdownType: 'next' | 'reset';
+  showFeedback: boolean;
 }
 
 const FeedbackMessage: React.FC<FeedbackMessageProps> = ({ 
@@ -14,9 +15,10 @@ const FeedbackMessage: React.FC<FeedbackMessageProps> = ({
   isGameOver, 
   isLoading, 
   countdown, 
-  countdownType 
+  countdownType,
+  showFeedback
 }) => {
-  if (!message) return null;
+  if (!message || !showFeedback) return null;
   
   // Check if the message contains "Correct" to apply special styling
   const isCorrect = message.includes("Correct");

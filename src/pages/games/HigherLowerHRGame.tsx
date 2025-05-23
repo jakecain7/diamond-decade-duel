@@ -22,7 +22,8 @@ const HigherLowerHRGame: React.FC = () => {
     countdown,
     countdownType,
     handleGuess,
-    restartGame
+    restartGame,
+    showFeedback
   } = useHigherLowerGame();
 
   if (isLoading && gamePhase === 'loadingFirstPlayer') {
@@ -75,6 +76,7 @@ const HigherLowerHRGame: React.FC = () => {
           isLoading={isLoading}
           countdown={countdown}
           countdownType={countdownType}
+          showFeedback={showFeedback}
         />
 
         {/* Game Controls */}
