@@ -3,7 +3,7 @@ import React from 'react';
 import { useHigherLowerGame } from '@/hooks/useHigherLowerGame';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, ArrowDown, Trophy } from 'lucide-react';
+import { ArrowUp, ArrowDown, Trophy, Share2 } from 'lucide-react';
 import LoadingDisplay from '@/components/grid/LoadingDisplay';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,6 +28,20 @@ const HigherLowerHRGame: React.FC = () => {
   } = useHigherLowerGame();
   
   const { user, loading: authLoading } = useAuth();
+
+  const handleFacebookShare = () => {
+    const shareUrl = "https://diamond-decade-duel.lovable.app/";
+    const shareMessage = `Just got a score of ${score} on Dinger Duel! Think you can beat me? Play here: ${shareUrl}`;
+    
+    // Create the Facebook share URL with encoded parameters
+    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedQuote = encodeURIComponent(shareMessage);
+    const facebookShareUrl = `https://www.facebook.com/sharer.php?u=${encodedUrl}&quote=${encodedQuote}`;
+    
+    // Open Facebook share dialog in a popup window
+    window.open(facebookShareUrl, 'facebook-share', 'width=600,height=400');
+    toast.success("Opening Facebook share dialog...");
+  };
 
   if (isLoading && gamePhase === 'loadingFirstPlayer') {
     return (
@@ -179,15 +193,11 @@ const HigherLowerHRGame: React.FC = () => {
               </Button>
               {score > 0 && (
                 <Button
-                  onClick={() => {
-                    // Copy to clipboard and show toast
-                    navigator.clipboard.writeText(`I scored ${score} on Dinger Duel! Can you beat my streak of ${streak}?`);
-                    toast.success("Copied to clipboard!");
-                  }}
+                  onClick={handleFacebookShare}
                   variant="outline"
                   className="text-navy border-navy/40 hover:bg-navy/5 font-bold text-lg uppercase h-14 w-full rounded-xl"
                 >
-                  Share Result
+                  <Share2 className="mr-2" size={18} /> Challenge Friends on Facebook
                 </Button>
               )}
             </div>
