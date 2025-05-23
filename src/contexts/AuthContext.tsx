@@ -1,86 +1,40 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { addUserToBeehiiv } from '@/utils/beehiiv';
+import { useAuthOperations } from '@/hooks/useAuthOperations';
+import { AuthContextType, Profile } from '@/types/auth-types';
 
-interface Profile {
-  id: string;
-  display_name: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-interface AuthContextType {
-  session: Session | null;
-  user: User | null;
-  profile: Profile | null;
-  loading: boolean;
-  hasDisplayName: boolean;
-  signInWithEmail: (email: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-}
-
+// Create the context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // State
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(true);
+  
+  // Hooks
   const { toast } = useToast();
-
-  // Fetch user profile from the database
-  const fetchUserProfile = async (userId: string) => {
-    try {
+  const { signInWithEmail, signOut, fetchUserProfile } = useAuthOperations();
+  
+  // Refresh user profile
+  const refreshProfile = async () => {
+    if (user?.id) {
       setProfileLoading(true);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        return;
+      const profileData = await fetchUserProfile(user.id);
+      if (profileData) {
+        setProfile(profileData as Profile);
       }
-
-      setProfile(data as Profile);
-    } catch (error) {
-      console.error('Exception when fetching profile:', error);
-    } finally {
       setProfileLoading(false);
     }
   };
 
-  // Add user to Beehiiv newsletter
-  const addUserToBeehiiv = async (email: string) => {
-    try {
-      console.log('Adding user to Beehiiv newsletter:', email);
-      
-      const { data, error } = await supabase.functions.invoke('add-user-to-beehiiv', {
-        body: { email }
-      });
-      
-      if (error) {
-        console.error('Error adding user to Beehiiv:', error);
-        return;
-      }
-      
-      console.log('Successfully added user to Beehiiv:', data);
-    } catch (error) {
-      console.error('Exception when adding user to Beehiiv:', error);
-    }
-  };
-
-  // Refresh user profile
-  const refreshProfile = async () => {
-    if (user?.id) {
-      await fetchUserProfile(user.id);
-    }
-  };
-
+  // Auth state management
   useEffect(() => {
     let previousEmail: string | null = null;
     
@@ -111,7 +65,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Fetch user profile if we have a user ID
           if (userId) {
             setTimeout(() => {
-              fetchUserProfile(userId);
+              fetchUserProfile(userId).then(data => {
+                if (data) {
+                  setProfile(data as Profile);
+                }
+                setProfileLoading(false);
+              });
             }, 0);
           }
         } else if (event === 'SIGNED_OUT') {
@@ -131,7 +90,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(currentSession?.user ?? null);
       
       if (currentSession?.user?.id) {
-        fetchUserProfile(currentSession.user.id);
+        fetchUserProfile(currentSession.user.id).then(data => {
+          if (data) {
+            setProfile(data as Profile);
+          }
+          setProfileLoading(false);
+        });
       } else {
         setProfileLoading(false);
       }
@@ -144,47 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [toast]);
 
-  const signInWithEmail = async (email: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          // Redirect to the dedicated auth callback route
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        }
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Check your email",
-        description: "We've sent you a magic link to sign in.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "An error occurred during sign in.",
-        variant: "destructive",
-      });
-      console.error('Error signing in:', error);
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "An error occurred during sign out.",
-        variant: "destructive",
-      });
-      console.error('Error signing out:', error);
-    }
-  };
-
+  // Context value
   const value = {
     session,
     user,
