@@ -19,13 +19,17 @@ const GameOverActions: React.FC<GameOverActionsProps> = ({
     const shareUrl = "https://diamond-decade-duel.lovable.app/";
     const shareMessage = `Just got a score of ${score} on Dinger Duel! Think you can beat me? Play here: ${shareUrl}`;
     
-    // Create the Facebook share URL with encoded parameters
+    // Create the Facebook share URL with encoded parameters using the correct sharer URL
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedQuote = encodeURIComponent(shareMessage);
-    const facebookShareUrl = `https://www.facebook.com/sharer.php?u=${encodedUrl}&quote=${encodedQuote}`;
+    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedQuote}`;
     
-    // Open Facebook share dialog in a popup window
-    window.open(facebookShareUrl, 'facebook-share', 'width=600,height=400');
+    // Open Facebook share dialog in a popup window with specific dimensions
+    window.open(
+      facebookShareUrl, 
+      'facebook-share', 
+      'width=626,height=436,location=no,toolbar=no,status=no'
+    );
     toast.success("Opening Facebook share dialog...");
   };
 
