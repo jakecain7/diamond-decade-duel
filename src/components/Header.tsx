@@ -5,6 +5,7 @@ import { Loader2, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
 const Header = () => {
   const {
     user,
@@ -78,10 +79,15 @@ const Header = () => {
         </Button>
       </div>;
   };
-  return <header className="bg-[#f5f0e1] border-b border-[#1d3557]/10 py-2">
-      <div className="container mx-auto flex justify-between items-center px-4">
+
+  return <header className="bg-[#f5f0e1] border-b border-[#1d3557]/10 py-1">
+      <div className="container mx-auto flex justify-between items-center px-4 py-1">
         <Link to={user ? "/dashboard" : "/"} className="flex items-center">
-          <img src="/lovable-uploads/ef092560-f20b-49f7-8e3e-09d6ae434ba1.png" alt="Grandstand Games" className="h-40 object-fill" />
+          <img 
+            src="/lovable-uploads/ef092560-f20b-49f7-8e3e-09d6ae434ba1.png" 
+            alt="Grandstand Games" 
+            className="h-12 object-contain" 
+          />
         </Link>
         
         {loading ? <div className="flex items-center">
@@ -90,4 +96,5 @@ const Header = () => {
       </div>
     </header>;
 };
+
 export default Header;
