@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -87,7 +86,7 @@ const Header = () => {
           <img 
             src="/lovable-uploads/ef092560-f20b-49f7-8e3e-09d6ae434ba1.png" 
             alt="Grandstand Games" 
-            className="h-10 object-contain" 
+            className="h-20 object-contain" 
           />
         </Link>
         
