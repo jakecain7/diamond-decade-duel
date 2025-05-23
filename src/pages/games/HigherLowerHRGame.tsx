@@ -61,8 +61,8 @@ const HigherLowerHRGame: React.FC = () => {
             playerName={nextPlayer.playerName} 
             homeRuns={
               gamePhase === 'showingResult' || gamePhase === 'gameOver'
-                ? `${nextPlayer.careerHR} HR`
-                : <span className="opacity-40">???</span>
+                ? `${nextPlayer.careerHR} HR` 
+                : "???" // Using string instead of React Element
             }
             className={`mb-8 ${gamePhase === 'showingResult' && feedbackMessage.includes('Wrong') ? 'animate-shake' : gamePhase === 'showingResult' && !feedbackMessage.includes('Wrong') ? 'animate-scale-in' : ''}`}
           />

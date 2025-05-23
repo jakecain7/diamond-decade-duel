@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 
 interface PlayerCardProps {
   playerName: string;
-  homeRuns: number | string;
+  homeRuns: string | number; // This only accepts string or number, not React Elements
   className?: string;
 }
 
