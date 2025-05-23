@@ -116,8 +116,12 @@ const Header = () => {
   return (
     <header className="bg-[#f5f0e1] border-b border-[#1d3557]/10 py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
-        <Link to={user ? "/dashboard" : "/"} className="text-2xl sm:text-3xl font-bold text-[#1d3557] font-serif italic">
-          Baseball Puzzles
+        <Link to={user ? "/dashboard" : "/"} className="flex items-center">
+          <img 
+            src="/lovable-uploads/ef092560-f20b-49f7-8e3e-09d6ae434ba1.png" 
+            alt="Grandstand Games" 
+            className="h-10 sm:h-12"
+          />
         </Link>
         
         {loading ? (

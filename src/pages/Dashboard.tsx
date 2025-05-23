@@ -111,15 +111,26 @@ const Dashboard = () => {
                   </div>
                 </AspectRatio>
                 <CardHeader>
-                  <CardTitle>{game.name}</CardTitle>
-                  <CardDescription className="text-[#1d3557]/60">
-                    {game.slug === "higher-lower-hr" ? "Active Game" : "Coming Soon"}
-                  </CardDescription>
+                  <CardTitle>
+                    {game.slug === "higher-lower-hr" ? "Dinger Duel" : game.name}
+                  </CardTitle>
+                  {game.slug !== "higher-lower-hr" && (
+                    <CardDescription className="text-[#1d3557]/60">
+                      Coming Soon
+                    </CardDescription>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-[#1d3557]/80">
-                    {game.description || "Experience the excitement of this fantastic game!"}
+                    {game.slug === "higher-lower-hr" 
+                      ? "Guess if players have more or fewer career home runs. How many can you get right in a row?" 
+                      : (game.description || "Experience the excitement of this fantastic game!")}
                   </p>
+                  {game.slug === "higher-lower-hr" && (
+                    <p className="text-xs text-[#1d3557]/60 mt-2 italic">
+                      *Stats updated through 2023
+                    </p>
+                  )}
                 </CardContent>
                 <CardFooter>
                   {game.slug === "higher-lower-hr" ? (

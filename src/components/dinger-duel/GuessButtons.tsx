@@ -14,15 +14,10 @@ interface GuessButtonsProps {
 const GuessButtons: React.FC<GuessButtonsProps> = ({ 
   onHigherGuess, 
   onLowerGuess, 
-  disabled, 
-  currentPlayerName, 
-  nextPlayerName 
+  disabled
 }) => {
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-center text-lg font-semibold mb-4">
-        Does {nextPlayerName} have higher or lower career home runs than {currentPlayerName}?
-      </div>
       <Button 
         onClick={onHigherGuess}
         className="bg-gold hover:bg-gold/90 text-navy border-2 border-navy font-bold text-lg uppercase h-14 rounded-xl shadow-inner"
