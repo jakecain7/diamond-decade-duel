@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Gamepad2, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 type Game = {
   id: string;
@@ -89,24 +90,26 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {games?.map((game) => (
               <Card key={game.id} className={`bg-white border-[#1d3557]/10 shadow-sm hover:shadow transition-shadow ${game.slug !== "higher-lower-hr" ? 'opacity-90' : ''}`}>
-                <div className="h-40 bg-[#e76f51]/10 flex items-center justify-center rounded-t-lg">
-                  {game.slug === "higher-lower-hr" && (
-                    <img 
-                      src="/lovable-uploads/bb067289-2d61-4087-ae17-424e6b8f2108.png" 
-                      alt="Dinger Duel"
-                      className="h-28 object-contain" 
-                    />
-                  )}
-                  {game.slug !== "higher-lower-hr" && (game.thumbnail_url ? (
-                    <img 
-                      src={game.thumbnail_url} 
-                      alt={game.name} 
-                      className="h-full w-full object-cover rounded-t-lg" 
-                    />
-                  ) : (
-                    <Gamepad2 className="h-16 w-16 text-[#e76f51]/40" />
-                  ))}
-                </div>
+                <AspectRatio ratio={16/9} className="rounded-t-lg overflow-hidden">
+                  <div className="w-full h-full bg-[#e76f51]/10 flex items-center justify-center">
+                    {game.slug === "higher-lower-hr" && (
+                      <img 
+                        src="/lovable-uploads/bb067289-2d61-4087-ae17-424e6b8f2108.png" 
+                        alt="Dinger Duel"
+                        className="w-full h-auto max-h-full object-contain px-4" 
+                      />
+                    )}
+                    {game.slug !== "higher-lower-hr" && (game.thumbnail_url ? (
+                      <img 
+                        src={game.thumbnail_url} 
+                        alt={game.name} 
+                        className="w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <Gamepad2 className="h-16 w-16 text-[#e76f51]/40" />
+                    ))}
+                  </div>
+                </AspectRatio>
                 <CardHeader>
                   <CardTitle>{game.name}</CardTitle>
                   <CardDescription className="text-[#1d3557]/60">
