@@ -43,7 +43,7 @@ serve(async (req: Request) => {
     
     console.log(`Fetching random slugger. Excluding player: ${excludePlayerId || 'none'}`);
     
-    // Call the updated SQL function which now returns more player information
+    // Call the updated SQL function which now has a secure search_path
     const { data: playerData, error } = await supabase
       .rpc('get_random_slugger', { exclude_id: excludePlayerId || null });
     

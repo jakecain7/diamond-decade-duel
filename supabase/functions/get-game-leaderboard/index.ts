@@ -53,6 +53,7 @@ serve(async (req) => {
     console.log(`Found game ID: ${gameId}`);
 
     // Call the updated database function with the timespan parameter
+    // This function now has a secure search_path
     const { data: leaderboardData, error: leaderboardError } = await supabaseClient
       .rpc('get_game_leaderboard', { 
         p_game_id: gameId,

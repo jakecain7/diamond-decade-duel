@@ -286,6 +286,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      find_similar_players: {
+        Args: { typed_name: string }
+        Returns: {
+          id: string
+          name_first: string
+          name_last: string
+          similarity: number
+        }[]
+      }
       get_game_leaderboard: {
         Args: { p_game_id: string; p_limit?: number; p_timespan?: string }
         Returns: {
@@ -304,38 +313,6 @@ export type Database = {
           final_year: number
           teams_played_for_names: string[]
         }[]
-      }
-      gtrgm_compress: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_decompress: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_in: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_options: {
-        Args: { "": unknown }
-        Returns: undefined
-      }
-      gtrgm_out: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      set_limit: {
-        Args: { "": number }
-        Returns: number
-      }
-      show_limit: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      show_trgm: {
-        Args: { "": string }
-        Returns: string[]
       }
     }
     Enums: {

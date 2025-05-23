@@ -55,6 +55,7 @@ serve(async (req: Request) => {
     }
     
     // Query the database using similarity function
+    // The function is now in public schema but uses extensions.similarity internally
     const { data, error } = await supabase.rpc('find_similar_players', {
       typed_name: typedName
     });

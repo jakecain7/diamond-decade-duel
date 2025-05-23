@@ -8,6 +8,8 @@ RETURNS TABLE(
   similarity FLOAT
 ) 
 LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions
 AS $$
 BEGIN
   RETURN QUERY
@@ -15,11 +17,11 @@ BEGIN
     p.id, 
     p.name_first, 
     p.name_last,
-    similarity(p.name_first || ' ' || p.name_last, typed_name) AS similarity
+    extensions.similarity(p.name_first || ' ' || p.name_last, typed_name) AS similarity
   FROM 
     players p
   WHERE 
-    similarity(p.name_first || ' ' || p.name_last, typed_name) > 0.3
+    extensions.similarity(p.name_first || ' ' || p.name_last, typed_name) > 0.3
   ORDER BY 
     similarity DESC
   LIMIT 3;
@@ -32,9 +34,14 @@ RETURNS TABLE(
   id TEXT,
   name_first TEXT,
   name_last TEXT,
-  career_hr BIGINT
+  career_hr BIGINT,
+  debut_year INTEGER,
+  final_year INTEGER,
+  teams_played_for_names TEXT[]
 ) 
 LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions
 AS $$
 BEGIN
   RETURN QUERY
@@ -42,7 +49,6 @@ BEGIN
     -- Calculate career stats for all players
     SELECT 
       bs.player_id,
-      SUM(bs."AB") as career_ab,
       SUM(bs."HR") as career_hr
     FROM 
       public.batting_stats bs
@@ -57,20 +63,37 @@ BEGIN
     FROM 
       career_stats cs
     WHERE 
-      (cs.career_ab > 500 OR cs.career_hr > 20)
+      (cs.career_hr >= 100)
       -- Exclude specified player if provided
       AND (exclude_id IS NULL OR cs.player_id != exclude_id)
+  ),
+  player_teams AS (
+    -- Get all teams a player played for
+    SELECT 
+      a.player_id,
+      ARRAY_AGG(DISTINCT t.name) AS teams_played_for
+    FROM 
+      appearances a
+    JOIN 
+      teams t ON a.team_id = t.id
+    GROUP BY 
+      a.player_id
   )
   -- Join with players table to get names and return one random player
   SELECT 
     p.id,
     p.name_first,
     p.name_last,
-    s.career_hr
+    s.career_hr,
+    p.debut_year,
+    p.final_year,
+    COALESCE(pt.teams_played_for, ARRAY[]::TEXT[]) AS teams_played_for_names
   FROM 
     sluggers s
   JOIN 
     public.players p ON s.player_id = p.id
+  LEFT JOIN
+    player_teams pt ON p.id = pt.player_id
   ORDER BY 
     RANDOM()
   LIMIT 1;
