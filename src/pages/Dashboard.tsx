@@ -96,7 +96,7 @@ const Dashboard = () => {
                       <img 
                         src="/lovable-uploads/bb067289-2d61-4087-ae17-424e6b8f2108.png" 
                         alt="Dinger Duel"
-                        className="w-full h-auto max-h-full object-contain px-4" 
+                        className="w-full h-auto max-h-full object-contain" 
                       />
                     )}
                     {game.slug !== "higher-lower-hr" && (game.thumbnail_url ? (
