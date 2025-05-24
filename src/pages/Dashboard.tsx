@@ -108,7 +108,7 @@ const Dashboard = () => {
                     )}
                     {game.slug === "bag-n-bomb-battle" && (
                       <img 
-                        src="/lovable-uploads/b63d544e-4e14-4a3a-999a-41d36b08c8e6.png" 
+                        src="/lovable-uploads/09c7beef-a317-4eb1-91cd-e4ac0b3a5cc7.png" 
                         alt="Bag'n Bomb Battle"
                         className="w-full h-auto max-h-full object-contain" 
                       />
