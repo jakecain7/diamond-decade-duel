@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,7 @@ import ComingSoon from "./pages/games/ComingSoon";
 import SetDisplayNamePage from "./pages/SetDisplayNamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import AdScriptManager from "./components/AdScriptManager";
+import BagNBombBattleGame from "./pages/games/BagNBombBattleGame";
 
 // Initialize Supabase auth to properly handle hash parameters
 // This ensures the client processes the URL fragment on initial load
@@ -57,6 +57,7 @@ const App = () => (
               <Route path="/grid/today" element={<GridPage />} />
               <Route path="/games/higher-lower-hr" element={<HigherLowerHRGame />} />
               <Route path="/games/midsummer-duel" element={<MidsummerDuelGame />} />
+              <Route path="/games/bag-n-bomb-battle" element={<BagNBombBattleGame />} />
               <Route path="/games/coming-soon/:gameSlug" element={<ComingSoon />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/set-display-name" element={<SetDisplayNamePage />} />
