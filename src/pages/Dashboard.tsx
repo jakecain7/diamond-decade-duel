@@ -89,7 +89,7 @@ const Dashboard = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {games?.map((game) => (
-              <Card key={game.id} className={`bg-white border-[#1d3557]/10 shadow-sm hover:shadow transition-shadow ${!['higher-lower-hr', 'midsummer-duel'].includes(game.slug) ? 'opacity-90' : ''}`}>
+              <Card key={game.id} className={`bg-white border-[#1d3557]/10 shadow-sm hover:shadow transition-shadow ${!['higher-lower-hr', 'midsummer-duel', 'bag-n-bomb-battle'].includes(game.slug) ? 'opacity-90' : ''}`}>
                 <AspectRatio ratio={16/9} className="rounded-t-lg overflow-hidden">
                   <div className="w-full h-full bg-[#e76f51]/10 flex items-center justify-center">
                     {game.slug === "higher-lower-hr" && (
@@ -106,7 +106,14 @@ const Dashboard = () => {
                         className="w-full h-auto max-h-full object-contain" 
                       />
                     )}
-                    {!['higher-lower-hr', 'midsummer-duel'].includes(game.slug) && (game.thumbnail_url ? (
+                    {game.slug === "bag-n-bomb-battle" && (
+                      <img 
+                        src="/lovable-uploads/b63d544e-4e14-4a3a-999a-41d36b08c8e6.png" 
+                        alt="Bag'n Bomb Battle"
+                        className="w-full h-auto max-h-full object-contain" 
+                      />
+                    )}
+                    {!['higher-lower-hr', 'midsummer-duel', 'bag-n-bomb-battle'].includes(game.slug) && (game.thumbnail_url ? (
                       <img 
                         src={game.thumbnail_url} 
                         alt={game.name} 
@@ -121,7 +128,7 @@ const Dashboard = () => {
                   <CardTitle>
                     {game.slug === "higher-lower-hr" ? "Dinger Duel" : game.name}
                   </CardTitle>
-                  {!['higher-lower-hr', 'midsummer-duel'].includes(game.slug) && (
+                  {!['higher-lower-hr', 'midsummer-duel', 'bag-n-bomb-battle'].includes(game.slug) && (
                     <CardDescription className="text-[#1d3557]/60">
                       Coming Soon
                     </CardDescription>
@@ -133,16 +140,18 @@ const Dashboard = () => {
                       ? "Guess if players have more or fewer career home runs. How many can you get right in a row?" 
                       : game.slug === "midsummer-duel"
                       ? "Guess if players have more or fewer career All-Star selections. Test your knowledge of baseball's elite!"
+                      : game.slug === "bag-n-bomb-battle"
+                      ? "Higher or Lower: Career HR + SB. Who's the ultimate power-speed threat?"
                       : (game.description || "Experience the excitement of this fantastic game!")}
                   </p>
-                  {['higher-lower-hr', 'midsummer-duel'].includes(game.slug) && (
+                  {['higher-lower-hr', 'midsummer-duel', 'bag-n-bomb-battle'].includes(game.slug) && (
                     <p className="text-xs text-[#1d3557]/60 mt-2 italic">
                       *Stats updated through 2023
                     </p>
                   )}
                 </CardContent>
                 <CardFooter>
-                  {['higher-lower-hr', 'midsummer-duel'].includes(game.slug) ? (
+                  {['higher-lower-hr', 'midsummer-duel', 'bag-n-bomb-battle'].includes(game.slug) ? (
                     <Button 
                       className="w-full bg-[#e76f51] hover:bg-[#e76f51]/90 text-white"
                       onClick={() => {
