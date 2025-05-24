@@ -2,11 +2,22 @@
 import React from 'react';
 import { useBagNBombGame } from '@/hooks/useBagNBombGame';
 import LoadingDisplay from '@/components/grid/LoadingDisplay';
-import GameHeader from '@/components/dinger-duel/GameHeader';
 import ComboPlayerCard from '@/components/bag-n-bomb/ComboPlayerCard';
 import GuessButtons from '@/components/dinger-duel/GuessButtons';
 import GameOverActions from '@/components/dinger-duel/GameOverActions';
 import FeedbackMessage from '@/components/dinger-duel/FeedbackMessage';
+
+const GameHeader = ({ personalBestScore, streak }: { personalBestScore: number | null; streak: number }) => {
+  return (
+    <div className="text-center mb-6">
+      <h1 className="text-3xl font-heading text-navy mb-2">BAG 'N BOMB BATTLE</h1>
+      <div className="flex justify-between text-sm text-navy/80">
+        <span>Best: {personalBestScore ?? 0}</span>
+        <span>Streak: {streak}</span>
+      </div>
+    </div>
+  );
+};
 
 const BagNBombBattleGame: React.FC = () => {
   const {
