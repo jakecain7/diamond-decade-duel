@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      allstar_appearances: {
+        Row: {
+          game_id: string | null
+          game_num: number
+          league_id: string | null
+          player_id: string
+          team_id: string | null
+          year: number
+        }
+        Insert: {
+          game_id?: string | null
+          game_num: number
+          league_id?: string | null
+          player_id: string
+          team_id?: string | null
+          year: number
+        }
+        Update: {
+          game_id?: string | null
+          game_num?: number
+          league_id?: string | null
+          player_id?: string
+          team_id?: string | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "allstar_appearances_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "asg_totals"
+            referencedColumns: ["player_id"]
+          },
+          {
+            foreignKeyName: "allstar_appearances_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appearances: {
         Row: {
           id: string
@@ -29,6 +71,13 @@ export type Database = {
           year?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "appearances_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "asg_totals"
+            referencedColumns: ["player_id"]
+          },
           {
             foreignKeyName: "appearances_player_id_fkey"
             columns: ["player_id"]
@@ -283,7 +332,15 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      asg_totals: {
+        Row: {
+          name_first: string | null
+          name_last: string | null
+          player_id: string | null
+          total_asg_selections: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       find_similar_players: {
