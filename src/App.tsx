@@ -60,7 +60,9 @@ const App = () => (
               <Route path="/games/coming-soon/:gameSlug" element={<ComingSoon />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/set-display-name" element={<SetDisplayNamePage />} />
-              <Route path="/leaderboard" element={<LeaderboardPage />} />
+              <Route path="/leaderboards" element={<LeaderboardPage />} />
+              {/* Redirect old leaderboard route to new unified route */}
+              <Route path="/leaderboard" element={<Navigate to="/leaderboards" replace />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
