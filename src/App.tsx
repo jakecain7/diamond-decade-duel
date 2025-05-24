@@ -14,6 +14,7 @@ import AuthCallback from "./components/AuthCallback";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import HigherLowerHRGame from "./pages/games/HigherLowerHRGame";
+import MidsummerDuelGame from "./pages/games/MidsummerDuelGame";
 import ComingSoon from "./pages/games/ComingSoon";
 import SetDisplayNamePage from "./pages/SetDisplayNamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/grid/today" element={<GridPage />} />
               <Route path="/games/higher-lower-hr" element={<HigherLowerHRGame />} />
+              <Route path="/games/midsummer-duel" element={<MidsummerDuelGame />} />
               <Route path="/games/coming-soon/:gameSlug" element={<ComingSoon />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/set-display-name" element={<SetDisplayNamePage />} />
