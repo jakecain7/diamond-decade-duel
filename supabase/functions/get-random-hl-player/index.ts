@@ -15,6 +15,7 @@ const corsHeaders = {
 // Interface for the request body
 interface GetRandomPlayerRequest {
   excludePlayerId?: string;
+  currentPlayerHR?: number;
 }
 
 // Enhanced interface for the player response to include new fields
@@ -37,15 +38,18 @@ serve(async (req: Request) => {
     // Create Supabase client
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     
-    // Parse request body to get excludePlayerId if provided
+    // Parse request body to get excludePlayerId and currentPlayerHR if provided
     const requestData: GetRandomPlayerRequest = await req.json().catch(() => ({}));
-    const { excludePlayerId } = requestData;
+    const { excludePlayerId, currentPlayerHR } = requestData;
     
-    console.log(`Fetching random slugger. Excluding player: ${excludePlayerId || 'none'}`);
+    console.log(`Fetching random slugger. Excluding player: ${excludePlayerId || 'none'}, Current HR: ${currentPlayerHR || 'none'}`);
     
-    // Call the updated SQL function which now has a secure search_path
+    // Call the updated SQL function which now accepts current HR value
     const { data: playerData, error } = await supabase
-      .rpc('get_random_slugger', { exclude_id: excludePlayerId || null });
+      .rpc('get_random_slugger', { 
+        exclude_id: excludePlayerId || null,
+        p_current_hr_value: currentPlayerHR || null
+      });
     
     if (error) {
       console.error('Error fetching random player:', error);

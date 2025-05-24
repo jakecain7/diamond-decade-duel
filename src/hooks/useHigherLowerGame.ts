@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -51,8 +52,8 @@ export function useHigherLowerGame() {
       }
       setCurrentPlayer(firstPlayer);
 
-      // Fetch next player (excluding the first player)
-      const secondPlayer = await fetchRandomPlayer(firstPlayer.playerId);
+      // Fetch next player (excluding the first player and ensuring different HR count)
+      const secondPlayer = await fetchRandomPlayer(firstPlayer.playerId, firstPlayer.careerHR);
       if (!secondPlayer) {
         toast.error('Failed to load next player');
         return;
@@ -93,8 +94,8 @@ export function useHigherLowerGame() {
       setIsLoading(false); // Allow UI to update during the pause
       setCountdown(3); // Initialize countdown to 3 seconds
       
-      // Fetch new next player during the pause
-      const newNextPlayer = await fetchRandomPlayer(nextPlayer.playerId);
+      // Fetch new next player during the pause (excluding current next player and ensuring different HR count)
+      const newNextPlayer = await fetchRandomPlayer(nextPlayer.playerId, nextPlayer.careerHR);
       
       // Set up countdown
       const countdownDuration = 3500; // 3.5 seconds

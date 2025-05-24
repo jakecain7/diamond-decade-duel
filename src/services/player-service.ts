@@ -14,10 +14,13 @@ export interface Player {
 /**
  * Fetches a random baseball player for the Higher-Lower HR game
  */
-export const fetchRandomPlayer = async (excludePlayerId?: string): Promise<Player | null> => {
+export const fetchRandomPlayer = async (excludePlayerId?: string, currentPlayerHR?: number): Promise<Player | null> => {
   try {
     const { data, error } = await supabase.functions.invoke('get-random-hl-player', {
-      body: { excludePlayerId }
+      body: { 
+        excludePlayerId,
+        currentPlayerHR
+      }
     });
 
     if (error) {

@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -51,8 +52,8 @@ export function useMidsummerDuelGame() {
       }
       setCurrentPlayer(firstPlayer);
 
-      // Fetch next player (excluding the first player)
-      const secondPlayer = await fetchRandomASGPlayer(firstPlayer.playerId);
+      // Fetch next player (excluding the first player and ensuring different ASG count)
+      const secondPlayer = await fetchRandomASGPlayer(firstPlayer.playerId, firstPlayer.totalASG);
       if (!secondPlayer) {
         toast.error('Failed to load next player');
         return;
@@ -93,8 +94,8 @@ export function useMidsummerDuelGame() {
       setIsLoading(false); // Allow UI to update during the pause
       setCountdown(3); // Initialize countdown to 3 seconds
       
-      // Fetch new next player during the pause
-      const newNextPlayer = await fetchRandomASGPlayer(nextPlayer.playerId);
+      // Fetch new next player during the pause (excluding current next player and ensuring different ASG count)
+      const newNextPlayer = await fetchRandomASGPlayer(nextPlayer.playerId, nextPlayer.totalASG);
       
       // Set up countdown
       const countdownDuration = 3500; // 3.5 seconds

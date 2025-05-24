@@ -359,8 +359,19 @@ export type Database = {
           player_name: string
         }[]
       }
+      get_random_asg_player: {
+        Args: { exclude_id?: string; p_current_asg_value?: number }
+        Returns: {
+          player_id: string
+          name_first: string
+          name_last: string
+          total_asg_selections: number
+        }[]
+      }
       get_random_slugger: {
-        Args: { exclude_id?: string }
+        Args:
+          | { exclude_id?: string }
+          | { exclude_id?: string; p_current_hr_value?: number }
         Returns: {
           id: string
           name_first: string

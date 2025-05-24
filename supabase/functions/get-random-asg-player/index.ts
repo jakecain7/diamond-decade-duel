@@ -15,6 +15,7 @@ const corsHeaders = {
 // Interface for the request body
 interface GetRandomASGPlayerRequest {
   excludePlayerId?: string;
+  currentPlayerASG?: number;
 }
 
 // Interface for the player response
@@ -34,23 +35,18 @@ serve(async (req: Request) => {
     // Create Supabase client
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     
-    // Parse request body to get excludePlayerId if provided
+    // Parse request body to get excludePlayerId and currentPlayerASG if provided
     const requestData: GetRandomASGPlayerRequest = await req.json().catch(() => ({}));
-    const { excludePlayerId } = requestData;
+    const { excludePlayerId, currentPlayerASG } = requestData;
     
-    console.log(`Fetching random ASG player. Excluding player: ${excludePlayerId || 'none'}`);
+    console.log(`Fetching random ASG player. Excluding player: ${excludePlayerId || 'none'}, Current ASG: ${currentPlayerASG || 'none'}`);
     
-    // Query the asg_totals view
-    let query = supabase
-      .from('asg_totals')
-      .select('player_id, name_first, name_last, total_asg_selections');
-    
-    // If excludePlayerId is provided, filter it out
-    if (excludePlayerId) {
-      query = query.neq('player_id', excludePlayerId);
-    }
-    
-    const { data: asgData, error } = await query;
+    // Call the new database function with tie prevention
+    const { data: asgData, error } = await supabase
+      .rpc('get_random_asg_player', { 
+        exclude_id: excludePlayerId || null,
+        p_current_asg_value: currentPlayerASG || null
+      });
     
     if (error) {
       console.error('Error fetching ASG players:', error);
@@ -75,9 +71,8 @@ serve(async (req: Request) => {
       );
     }
     
-    // Select a random player from the results
-    const randomIndex = Math.floor(Math.random() * asgData.length);
-    const player = asgData[randomIndex];
+    // Extract the player from the result
+    const player = asgData[0];
     
     // Format the response
     const response: ASGPlayerResponse = {

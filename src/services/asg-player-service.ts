@@ -11,10 +11,13 @@ export interface ASGPlayer {
 /**
  * Fetches a random baseball player with All-Star Game appearances
  */
-export const fetchRandomASGPlayer = async (excludePlayerId?: string): Promise<ASGPlayer | null> => {
+export const fetchRandomASGPlayer = async (excludePlayerId?: string, currentPlayerASG?: number): Promise<ASGPlayer | null> => {
   try {
     const { data, error } = await supabase.functions.invoke('get-random-asg-player', {
-      body: { excludePlayerId }
+      body: { 
+        excludePlayerId,
+        currentPlayerASG
+      }
     });
 
     if (error) {
