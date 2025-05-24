@@ -38,6 +38,9 @@ verify_jwt = false
 [functions.get-random-hl-player]
 verify_jwt = false
 
+[functions.get-random-combo-player]
+verify_jwt = false
+
 [functions.get-user-game-score]
 verify_jwt = false
 

@@ -46,6 +46,13 @@ export type Database = {
             foreignKeyName: "allstar_appearances_player_id_fkey"
             columns: ["player_id"]
             isOneToOne: false
+            referencedRelation: "combo_totals"
+            referencedColumns: ["player_id"]
+          },
+          {
+            foreignKeyName: "allstar_appearances_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
             referencedRelation: "players"
             referencedColumns: ["id"]
           },
@@ -76,6 +83,13 @@ export type Database = {
             columns: ["player_id"]
             isOneToOne: false
             referencedRelation: "asg_totals"
+            referencedColumns: ["player_id"]
+          },
+          {
+            foreignKeyName: "appearances_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "combo_totals"
             referencedColumns: ["player_id"]
           },
           {
@@ -338,6 +352,19 @@ export type Database = {
           name_last: string | null
           player_id: string | null
           total_asg_selections: number | null
+        }
+        Relationships: []
+      }
+      combo_totals: {
+        Row: {
+          career_hr: number | null
+          career_sb: number | null
+          combo_total: number | null
+          debut_year: number | null
+          final_year: number | null
+          name_first: string | null
+          name_last: string | null
+          player_id: string | null
         }
         Relationships: []
       }
