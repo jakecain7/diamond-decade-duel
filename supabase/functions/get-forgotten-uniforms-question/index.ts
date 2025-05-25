@@ -48,6 +48,7 @@ serve(async (req) => {
     const { data: allTeams, error: teamsError } = await supabase
       .from('teams')
       .select('id, name')
+      .neq('id', 'HOU') // Exclude Houston Colt .45s from potential decoy teams
 
     if (teamsError) {
       console.error('Error fetching all teams:', teamsError)
@@ -59,7 +60,7 @@ serve(async (req) => {
       throw new Error('No teams found')
     }
 
-    console.log(`Found ${allTeams.length} total teams`)
+    console.log(`Found ${allTeams.length} total teams (excluding Colt .45s)`)
 
     // Filter out teams the player has played for
     const teamsPlayerNeverPlayedFor = allTeams.filter(team => 
