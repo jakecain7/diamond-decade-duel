@@ -84,11 +84,11 @@ export function useForgottenUniformsGame() {
     const isCorrect = answerId === correctChoice?.id;
 
     if (isCorrect) {
-      // Correct answer
+      // Correct answer - create more detailed feedback message
       const newScore = score + 1;
       setScore(newScore);
       setStreak(prevStreak => prevStreak + 1);
-      setFeedbackMessage(`Correct! ${currentQuestion.playerName} played ${currentQuestion.stintSeasons} season${currentQuestion.stintSeasons > 1 ? 's' : ''} (${currentQuestion.stintYears}) with the ${currentQuestion.forgottenTeamName}.`);
+      setFeedbackMessage(`Correct! ${currentQuestion.playerName} played for the ${currentQuestion.forgottenTeamName} in ${currentQuestion.stintYears}.`);
       setCountdownType('next');
       
       // Add a pause before moving to the next question
