@@ -7,6 +7,7 @@ export const ROUTES = {
   HIGHER_LOWER_HR: '/games/higher-lower-hr',
   MIDSUMMER_DUEL: '/games/midsummer-duel',
   BAG_N_BOMB_BATTLE: '/games/bag-n-bomb-battle',
+  FORGOTTEN_UNIFORMS: '/games/forgotten-uniforms',
   AUTH_CALLBACK: '/auth/callback',
   LEADERBOARDS: '/leaderboards'
 };

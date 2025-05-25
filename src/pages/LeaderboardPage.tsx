@@ -15,7 +15,7 @@ import { Loader2, Trophy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Timespan = "all_time" | "today";
-type GameSlug = "higher-lower-hr" | "midsummer-duel" | "bag-n-bomb-battle";
+type GameSlug = "higher-lower-hr" | "midsummer-duel" | "bag-n-bomb-battle" | "forgotten-uniforms";
 
 interface LeaderboardEntry {
   rank: number;
@@ -44,6 +44,11 @@ const AVAILABLE_GAMES: Game[] = [
     slug: "bag-n-bomb-battle",
     name: "Bag 'n Bomb Battle",
     displayTitle: "Bag 'n Bomb Battle"
+  },
+  {
+    slug: "forgotten-uniforms",
+    name: "Forgotten Uniforms",
+    displayTitle: "Forgotten Uniforms"
   }
 ];
 
@@ -90,7 +95,7 @@ const LeaderboardPage = () => {
             onValueChange={(value) => setSelectedGame(value as GameSlug)}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-3 bg-baseball-green/10 h-12">
+            <TabsList className="grid w-full grid-cols-4 bg-baseball-green/10 h-12">
               {AVAILABLE_GAMES.map((game) => (
                 <TabsTrigger 
                   key={game.slug}

@@ -207,6 +207,105 @@ export type Database = {
         }
         Relationships: []
       }
+      player_appearances_filtered: {
+        Row: {
+          player_id: string | null
+          team_id: string | null
+          year: number | null
+        }
+        Insert: {
+          player_id?: string | null
+          team_id?: string | null
+          year?: number | null
+        }
+        Update: {
+          player_id?: string | null
+          team_id?: string | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      player_forgotten_stints: {
+        Row: {
+          all_teams_played_ids: string[] | null
+          forgotten_stint_first_year: number | null
+          forgotten_stint_last_year: number | null
+          forgotten_stint_seasons: number | null
+          forgotten_team_id: string | null
+          forgotten_team_name: string | null
+          player_id: string | null
+          player_name_first: string | null
+          player_name_last: string | null
+          primary_team_id: string | null
+        }
+        Insert: {
+          all_teams_played_ids?: string[] | null
+          forgotten_stint_first_year?: number | null
+          forgotten_stint_last_year?: number | null
+          forgotten_stint_seasons?: number | null
+          forgotten_team_id?: string | null
+          forgotten_team_name?: string | null
+          player_id?: string | null
+          player_name_first?: string | null
+          player_name_last?: string | null
+          primary_team_id?: string | null
+        }
+        Update: {
+          all_teams_played_ids?: string[] | null
+          forgotten_stint_first_year?: number | null
+          forgotten_stint_last_year?: number | null
+          forgotten_stint_seasons?: number | null
+          forgotten_team_id?: string | null
+          forgotten_team_name?: string | null
+          player_id?: string | null
+          player_name_first?: string | null
+          player_name_last?: string | null
+          primary_team_id?: string | null
+        }
+        Relationships: []
+      }
+      player_primary_teams: {
+        Row: {
+          max_seasons: number | null
+          player_id: string | null
+          primary_team_id: string | null
+        }
+        Insert: {
+          max_seasons?: number | null
+          player_id?: string | null
+          primary_team_id?: string | null
+        }
+        Update: {
+          max_seasons?: number | null
+          player_id?: string | null
+          primary_team_id?: string | null
+        }
+        Relationships: []
+      }
+      player_team_summary: {
+        Row: {
+          first_year: number | null
+          last_year: number | null
+          player_id: string | null
+          seasons_with_team: number | null
+          team_id: string | null
+        }
+        Insert: {
+          first_year?: number | null
+          last_year?: number | null
+          player_id?: string | null
+          seasons_with_team?: number | null
+          team_id?: string | null
+        }
+        Update: {
+          first_year?: number | null
+          last_year?: number | null
+          player_id?: string | null
+          seasons_with_team?: number | null
+          team_id?: string | null
+        }
+        Relationships: []
+      }
       players: {
         Row: {
           debut_year: number | null
