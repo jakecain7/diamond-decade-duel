@@ -95,25 +95,36 @@ const ForgottenUniformsGame: React.FC = () => {
   // Determine if the answer buttons should be disabled
   const shouldDisableAnswers = isLoading || gamePhase === 'showingResult';
 
+  // Determine which question to show based on game phase and feedback type
+  const shouldShowCurrentQuestion = currentQuestion && (
+    gamePhase === 'waitingForGuess' || 
+    (gamePhase === 'showingResult' && showFeedback)
+  );
+
+  const shouldShowNextQuestion = nextQuestion && (
+    gamePhase === 'showingResult' && 
+    !showFeedback && 
+    !feedbackMessage.includes('Wrong')
+  );
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-navy p-6">
       <div className="w-full max-w-[600px] bg-cream rounded-3xl p-6 shadow-lg">
         <GameHeader personalBestScore={personalBestScore} streak={streak} />
         
-        {/* Current Question Card */}
-        {currentQuestion && (
+        {/* Current Question Card - show during waiting for guess or when showing result with feedback */}
+        {shouldShowCurrentQuestion && (
           <QuestionCard 
             question={currentQuestion}
             selectedAnswer={selectedAnswer}
             onAnswerSelect={handleAnswer}
             disabled={shouldDisableAnswers}
             showResult={gamePhase === 'showingResult'}
-            className={gamePhase === 'showingResult' && !feedbackMessage.includes('Wrong') ? 'animate-fade-out' : ''}
           />
         )}
 
-        {/* Next Question Card (shows during result phase) */}
-        {nextQuestion && gamePhase === 'showingResult' && !feedbackMessage.includes('Wrong') && (
+        {/* Next Question Card - only show after feedback is hidden for correct answers */}
+        {shouldShowNextQuestion && (
           <QuestionCard 
             question={nextQuestion}
             selectedAnswer={null}
