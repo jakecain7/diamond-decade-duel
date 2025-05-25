@@ -124,7 +124,7 @@ const Dashboard = () => {
               return (
                 <Card key={game.id} className={`bg-white border-[#1d3557]/10 shadow-sm hover:shadow transition-shadow ${!isPlayable ? 'opacity-90' : ''}`}>
                   <AspectRatio ratio={16/9} className="rounded-t-lg overflow-hidden">
-                    <div className="w-full h-full bg-[#e76f51]/10 flex items-center justify-center">
+                    <div className="w-full h-full bg-white flex items-center justify-center">
                       {game.slug === "higher-lower-hr" && (
                         <img 
                           src="/lovable-uploads/0db4250d-fe29-4220-adf2-6f7a9f5f0044.png" 
