@@ -126,9 +126,8 @@ export function useForgottenUniformsGame() {
       }, interval);
       
     } else {
-      // Wrong answer
-      const correctChoice = currentQuestion.choices.find(choice => choice.isCorrect);
-      setFeedbackMessage(`Wrong! ${currentQuestion.playerName} never played for the team you selected. The correct answer was ${correctChoice?.name}. Game Over.`);
+      // Wrong answer - updated message format
+      setFeedbackMessage(`Wrong! ${currentQuestion.playerName} played for ${currentQuestion.forgottenTeamName} in ${currentQuestion.stintYears}. Game Over.`);
       setCountdownType('reset');
       
       // Submit the score to the backend
