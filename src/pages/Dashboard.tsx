@@ -129,28 +129,28 @@ const Dashboard = () => {
                         <img 
                           src="/lovable-uploads/0db4250d-fe29-4220-adf2-6f7a9f5f0044.png" 
                           alt="Dinger Duel"
-                          className="w-full h-auto max-h-full object-contain" 
+                          className="w-full h-full object-cover" 
                         />
                       )}
                       {game.slug === "midsummer-duel" && (
                         <img 
                           src="/lovable-uploads/ec3533b3-68ac-46fc-9168-ed0611c2c7b2.png" 
                           alt="Midsummer Duel"
-                          className="w-full h-auto max-h-full object-contain" 
+                          className="w-full h-full object-cover" 
                         />
                       )}
                       {game.slug === "bag-n-bomb-battle" && (
                         <img 
                           src="/lovable-uploads/09c7beef-a317-4eb1-91cd-e4ac0b3a5cc7.png" 
                           alt="Bag'n Bomb Battle"
-                          className="w-full h-auto max-h-full object-contain" 
+                          className="w-full h-full object-cover" 
                         />
                       )}
                       {game.slug === "forgotten-uniforms" && (
                         <img 
                           src="/lovable-uploads/86e98811-ab4e-497b-a60d-6ce33650ff91.png" 
                           alt="Forgotten Uniforms"
-                          className="w-full h-auto max-h-full object-contain" 
+                          className="w-full h-full object-cover" 
                         />
                       )}
                       {!isPlayable && (game.thumbnail_url ? (
