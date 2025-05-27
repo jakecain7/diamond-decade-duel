@@ -11,8 +11,15 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Trophy } from "lucide-react";
+import { Loader2, Trophy, ChevronDown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Timespan = "all_time" | "today";
 type GameSlug = "higher-lower-hr" | "midsummer-duel" | "bag-n-bomb-battle" | "forgotten-uniforms";
@@ -76,8 +83,8 @@ const LeaderboardPage = () => {
 
   // Map timespans to display titles
   const timespanTitles = {
-    all_time: "All-Time High Scores",
-    today: "Today's High Scores"
+    all_time: "All-Time",
+    today: "Today"
   };
 
   return (
@@ -88,32 +95,32 @@ const LeaderboardPage = () => {
           Game Leaderboards
         </h1>
 
-        {/* Game Selector */}
-        <div className="mb-6">
-          <Tabs 
-            value={selectedGame} 
-            onValueChange={(value) => setSelectedGame(value as GameSlug)}
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-4 bg-baseball-green/10 h-12">
+        {/* Game Selector Dropdown */}
+        <div className="mb-6 max-w-md mx-auto">
+          <Select value={selectedGame} onValueChange={(value) => setSelectedGame(value as GameSlug)}>
+            <SelectTrigger className="w-full bg-white border-baseball-green/20 text-baseball-green hover:bg-baseball-green/5">
+              <SelectValue placeholder="Select a game" />
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </SelectTrigger>
+            <SelectContent className="bg-white border-baseball-green/20">
               {AVAILABLE_GAMES.map((game) => (
-                <TabsTrigger 
-                  key={game.slug}
+                <SelectItem 
+                  key={game.slug} 
                   value={game.slug}
-                  className="data-[state=active]:bg-baseball-green data-[state=active]:text-white data-[state=inactive]:text-baseball-green font-semibold text-xs sm:text-sm"
+                  className="text-baseball-green hover:bg-baseball-green/10 focus:bg-baseball-green/10"
                 >
                   {game.name}
-                </TabsTrigger>
+                </SelectItem>
               ))}
-            </TabsList>
-          </Tabs>
+            </SelectContent>
+          </Select>
         </div>
 
         <Card className="bg-white shadow-md">
           <CardHeader className="border-b border-baseball-green/10 bg-baseball-green/5">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-              <CardTitle className="text-xl text-baseball-green font-semibold">
-                {currentGame?.displayTitle} - {timespanTitles[timespan]}
+            <div className="flex flex-col items-center gap-4">
+              <CardTitle className="text-xl text-baseball-green font-semibold text-center">
+                {currentGame?.displayTitle} - {timespanTitles[timespan]} Scores
               </CardTitle>
               
               {/* Timespan Selector */}
