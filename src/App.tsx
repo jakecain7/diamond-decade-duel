@@ -18,7 +18,6 @@ import MidsummerDuelGame from "./pages/games/MidsummerDuelGame";
 import ComingSoon from "./pages/games/ComingSoon";
 import SetDisplayNamePage from "./pages/SetDisplayNamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
-import AdScriptManager from "./components/AdScriptManager";
 import BagNBombBattleGame from "./pages/games/BagNBombBattleGame";
 import ForgottenUniformsGame from "./pages/games/ForgottenUniformsGame";
 
@@ -52,7 +51,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Header />
-            <AdScriptManager />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
