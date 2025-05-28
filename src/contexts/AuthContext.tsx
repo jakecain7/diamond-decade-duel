@@ -20,7 +20,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   
   // Hooks
   const { toast } = useToast();
-  const { signInWithEmail, signOut, fetchUserProfile } = useAuthOperations();
+  const { signInWithEmail: authSignInWithEmail, signOut, fetchUserProfile } = useAuthOperations();
+  
+  // Wrapper for signInWithEmail to maintain compatibility
+  const signInWithEmail = async (email: string): Promise<{ success: boolean; error?: string }> => {
+    return await authSignInWithEmail(email);
+  };
   
   // Refresh user profile
   const refreshProfile = async () => {

@@ -14,7 +14,7 @@ export interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   hasDisplayName: boolean;
-  signInWithEmail: (email: string) => Promise<void>;
+  signInWithEmail: (email: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,7 @@ import SetDisplayNamePage from "./pages/SetDisplayNamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import BagNBombBattleGame from "./pages/games/BagNBombBattleGame";
 import ForgottenUniformsGame from "./pages/games/ForgottenUniformsGame";
+import CheckEmailPage from "./pages/CheckEmailPage";
 
 // Initialize Supabase auth to properly handle hash parameters
 // This ensures the client processes the URL fragment on initial load
@@ -61,6 +61,7 @@ const App = () => (
               <Route path="/games/forgotten-uniforms" element={<ForgottenUniformsGame />} />
               <Route path="/games/coming-soon/:gameSlug" element={<ComingSoon />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/check-email" element={<CheckEmailPage />} />
               <Route path="/set-display-name" element={<SetDisplayNamePage />} />
               <Route path="/leaderboards" element={<LeaderboardPage />} />
               {/* Redirect old leaderboard route to new unified route */}

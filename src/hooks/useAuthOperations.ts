@@ -12,7 +12,7 @@ export const useAuthOperations = () => {
   /**
    * Sign in with email (magic link)
    */
-  const signInWithEmail = async (email: string): Promise<void> => {
+  const signInWithEmail = async (email: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -26,10 +26,7 @@ export const useAuthOperations = () => {
         throw error;
       }
 
-      toast({
-        title: "Check your email",
-        description: "We've sent you a magic link to sign in.",
-      });
+      return { success: true };
     } catch (error: any) {
       toast({
         title: "Error",
@@ -37,6 +34,7 @@ export const useAuthOperations = () => {
         variant: "destructive",
       });
       console.error('Error signing in:', error);
+      return { success: false, error: error.message };
     }
   };
 
