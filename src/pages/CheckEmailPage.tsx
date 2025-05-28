@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { mail, check-circle } from "lucide-react";
+import { Mail, CheckCircle } from "lucide-react";
 
 const CheckEmailPage = () => {
   return (
@@ -13,7 +13,7 @@ const CheckEmailPage = () => {
           <CardContent className="p-8 text-center">
             <div className="mb-6">
               <div className="mx-auto w-16 h-16 bg-[#e76f51]/10 rounded-full flex items-center justify-center mb-4">
-                <mail className="h-8 w-8 text-[#e76f51]" />
+                <Mail className="h-8 w-8 text-[#e76f51]" />
               </div>
               <h1 className="text-2xl font-bold text-[#1d3557] mb-2">
                 Check Your Email
@@ -25,7 +25,7 @@ const CheckEmailPage = () => {
             
             <div className="space-y-4">
               <div className="flex items-center justify-center gap-2 text-sm text-[#1d3557]/60">
-                <check-circle className="h-4 w-4" />
+                <CheckCircle className="h-4 w-4" />
                 <span>Check your spam folder if you don't see it</span>
               </div>
               
