@@ -79,26 +79,6 @@ const LandingPage = () => {
             Our Baseball Games
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Double-Play Grid */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-              <img 
-                src="/lovable-uploads/1e71e66f-136a-4bf5-b46a-48c04db44fc4.png" 
-                alt="Double-Play Grid" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-[#1d3557] mb-2">Double-Play Grid</h3>
-                <p className="text-[#1d3557]/70 mb-4">
-                  Fill the 2×3 grid with players who match both the row category and column decade. Daily puzzles test your baseball history knowledge.
-                </p>
-                <Link to="/grid/today">
-                  <Button className="w-full bg-[#e76f51] hover:bg-[#e76f51]/90">
-                    Play Now
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
             {/* Dinger Duel */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <img 
@@ -111,18 +91,13 @@ const LandingPage = () => {
                 <p className="text-[#1d3557]/70 mb-4">
                   Compare home run totals in this higher-or-lower game. Guess whether the next player hit more or fewer dingers.
                 </p>
-                <Link to="/games/higher-lower-hr">
-                  <Button className="w-full bg-[#e76f51] hover:bg-[#e76f51]/90">
-                    Play Now
-                  </Button>
-                </Link>
               </div>
             </div>
 
             {/* Midsummer Duel */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <img 
-                src="/lovable-uploads/86e98811-ab4e-497b-a60d-6ce33650ff91.png" 
+                src="/lovable-uploads/ec3533b3-68ac-46fc-9168-ed0611c2c7b2.png" 
                 alt="Midsummer Duel" 
                 className="w-full h-48 object-cover"
               />
@@ -131,18 +106,13 @@ const LandingPage = () => {
                 <p className="text-[#1d3557]/70 mb-4">
                   Test your All-Star Game knowledge by guessing which player had more All-Star selections throughout their career.
                 </p>
-                <Link to="/games/midsummer-duel">
-                  <Button className="w-full bg-[#e76f51] hover:bg-[#e76f51]/90">
-                    Play Now
-                  </Button>
-                </Link>
               </div>
             </div>
 
             {/* Bag 'n Bomb Battle */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <img 
-                src="/lovable-uploads/bb067289-2d61-4087-ae17-424e6b8f2108.png" 
+                src="/lovable-uploads/09c7beef-a317-4eb1-91cd-e4ac0b3a5cc7.png" 
                 alt="Bag 'n Bomb Battle" 
                 className="w-full h-48 object-cover"
               />
@@ -151,18 +121,13 @@ const LandingPage = () => {
                 <p className="text-[#1d3557]/70 mb-4">
                   Match players who excelled in both stolen bases and home runs. Find the perfect combination of speed and power.
                 </p>
-                <Link to="/games/bag-n-bomb-battle">
-                  <Button className="w-full bg-[#e76f51] hover:bg-[#e76f51]/90">
-                    Play Now
-                  </Button>
-                </Link>
               </div>
             </div>
 
             {/* Forgotten Uniforms */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <img 
-                src="/lovable-uploads/ec3533b3-68ac-46fc-9168-ed0611c2c7b2.png" 
+                src="/lovable-uploads/86e98811-ab4e-497b-a60d-6ce33650ff91.png" 
                 alt="Forgotten Uniforms" 
                 className="w-full h-48 object-cover"
               />
@@ -171,11 +136,6 @@ const LandingPage = () => {
                 <p className="text-[#1d3557]/70 mb-4">
                   Identify players based on their lesser-known team affiliations. Test your knowledge of baseball's journeymen.
                 </p>
-                <Link to="/games/forgotten-uniforms">
-                  <Button className="w-full bg-[#e76f51] hover:bg-[#e76f51]/90">
-                    Play Now
-                  </Button>
-                </Link>
               </div>
             </div>
 
@@ -217,7 +177,7 @@ const LandingPage = () => {
       <footer className="py-8 px-4 bg-[#1d3557]/95 border-t border-white/10">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-white/70 text-sm">
-            © 2024 Bleacher Arcade. All rights reserved. | 
+            © 2025 Bleacher Arcade. All rights reserved. | 
             <span className="ml-2">Made for baseball fans, by baseball fans.</span>
           </p>
         </div>

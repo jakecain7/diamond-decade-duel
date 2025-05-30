@@ -53,7 +53,7 @@ const AuthForm = () => {
               Sending magic link...
             </>
           ) : (
-            "Sign in with Email"
+            "Play For Free"
           )}
         </Button>
       </form>
